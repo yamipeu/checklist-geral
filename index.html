@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Checklists de Protocolos</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1828/1828640.png">
 
 <style>
 :root{
@@ -43,19 +42,13 @@ color:white;
 cursor:pointer;
 }
 
-.center{max-width:1100px;margin:50px auto;padding:20px}
+.center{max-width:1100px;margin:40px auto;padding:20px}
 
 .card{
 background:var(--card);
 border-radius:16px;
 padding:25px;
 box-shadow:0 15px 40px rgba(0,0,0,.6);
-animation:fade .4s ease;
-}
-
-@keyframes fade{
-from{opacity:0;transform:translateY(10px)}
-to{opacity:1}
 }
 
 input,textarea{
@@ -68,78 +61,37 @@ background:#222;
 color:white;
 }
 
-.profile{
-display:flex;
-align-items:center;
-gap:12px;
-}
+.profile{display:flex;align-items:center;gap:12px}
 
-.avatar{
-width:50px;
-height:50px;
-border-radius:50%;
-object-fit:cover;
-cursor:pointer;
-border:2px solid var(--red);
-}
+.avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--red);cursor:pointer}
 
-.dashboard{
-display:grid;
-grid-template-columns:1fr 2fr;
-gap:30px;
-}
+.bigAvatar{width:120px;height:120px;border-radius:50%;border:3px solid var(--red)}
 
-.bigAvatar{
-width:120px;height:120px;border-radius:50%;border:3px solid var(--red)
-}
+.dashboard{display:grid;grid-template-columns:1fr 2fr;gap:30px}
 
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:20px;
-}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
 
-.tile{
-background:#1b1b1b;
-padding:25px;
-border-radius:14px;
-cursor:pointer;
-transition:.3s;
-}
-
-.tile:hover{transform:translateY(-6px)}
+.tile{background:#1b1b1b;padding:25px;border-radius:14px;cursor:pointer}
 
 .progress{height:10px;background:#333;border-radius:10px;overflow:hidden;margin:10px 0}
 .progress div{height:100%;background:var(--red);width:0%;transition:.4s}
 
 .stage{margin-top:15px;border-top:1px solid #333;padding-top:10px}
 
+.checkline{display:flex;gap:10px;align-items:flex-start}
+
 .top{display:flex;gap:10px;margin-bottom:15px}
 
 .modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.85);
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:10;
-pointer-events:none;
-opacity:0;
-transition:.3s;
+position:fixed;inset:0;background:rgba(0,0,0,.85);
+display:flex;align-items:center;justify-content:center;
+opacity:0;pointer-events:none;transition:.3s
 }
 
-.modal.active{
-pointer-events:auto;
-opacity:1;
-}
-
+.modal.active{opacity:1;pointer-events:auto}
 .modal img{max-width:80%;border-radius:12px}
 
-.save{
-position:fixed;bottom:15px;right:15px;
-background:#222;padding:6px 14px;border-radius:20px;font-size:12px
-}
+.save{position:fixed;bottom:15px;right:15px;background:#222;padding:6px 14px;border-radius:20px;font-size:12px}
 </style>
 </head>
 
@@ -154,10 +106,10 @@ background:#222;padding:6px 14px;border-radius:20px;font-size:12px
 </div>
 </header>
 
-<div id="loginScreen" class="center card">
+<div id="loginScreen" class="center card hidden">
 <h2>Login</h2>
 <input id="username" placeholder="Digite seu username">
-<button onclick="doLogin()" style="margin-top:15px;width:100%">Entrar</button>
+<button style="width:100%;margin-top:15px" onclick="doLogin()">Entrar</button>
 </div>
 
 <div id="dashboard" class="center hidden">
@@ -211,59 +163,79 @@ Tempo: <span id="timer">00:00</span>
 <div id="saved" class="save hidden">Salvo automaticamente</div>
 
 <script>
-let user,data={},start,current;
-
 const lists={
-me:["Informar SLA","Filtrar endereço","Verificar docs","Verificar ME","Abrir ME","Atualizar plano","Gerar contrato","Abrir renovação","Encaminhar CS"],
-plano:["Informar processo","Verificar docs","Abrir ERP","Conferir","Enviar vídeo","Gerar contrato","Abrir renovação","Encerrar"]
+me:[
+"Informar sobre custo/isenção, pedir para levar o equipamento e informar SLA",
+"Filtrar o novo endereço",
+"Verificar documentos",
+"Verificar se já houve ME ou se pode ser isento",
+"Abrir ME no ERP",
+"Verificar se há atualização de plano (abrir atualização e enviar para o FAT, caso haja)",
+"Gerar contrato (verificar informações em sistema)",
+"Abrir a renovação (após o cliente assinar)",
+"Encaminhar para a CS"
+],
+plano:[
+"Informar sobre o processo e benefícios",
+"Verificar documentação e faturas",
+"Abrir a atualização no ERP e preencher",
+"Conferir informações em sistema",
+"Enviar vídeo para o/a cliente",
+"Gerar contrato",
+"Abrir a renovação após a assinatura subir em sistema",
+"Encerrar renovação"
+]
 };
+
+let user,data={},start;
+
+function init(){
+user=localStorage.currentUser;
+if(user){
+data=JSON.parse(localStorage[user]||'{"count":0,"avatar":""}');
+showDashboard();
+}else loginScreen.classList.remove("hidden");
+}
 
 function doLogin(){
 user=username.value.trim();
 if(!user)return;
+localStorage.currentUser=user;
 data=JSON.parse(localStorage[user]||'{"count":0,"avatar":""}');
+showDashboard();
+}
+
+function showDashboard(){
 loginScreen.classList.add("hidden");
 dashboard.classList.remove("hidden");
 userBar.classList.remove("hidden");
 hello.innerText="Olá, "+user;
 userName.innerText=user;
-stats.innerText="Atendimentos: "+data.count;
+stats.innerText="Atendimentos: "+(data.count||0);
 if(data.avatar){avatar.src=bigAvatar.src=data.avatar}
 }
 
-function logout(){location.reload()}
+function logout(){localStorage.removeItem("currentUser");location.reload()}
 
 function upload(i){
 let r=new FileReader();
-r.onload=e=>{
-data.avatar=e.target.result;
-avatar.src=bigAvatar.src=data.avatar;
-save();
-}
+r.onload=e=>{data.avatar=e.target.result;avatar.src=bigAvatar.src=data.avatar;save()}
 r.readAsDataURL(i.files[0]);
 }
 
 avatar.onclick=()=>openModal();
 bigAvatar.onclick=()=>openModal();
 
-function openModal(){
-if(!data.avatar)return;
-modalImg.src=data.avatar;
-photoModal.classList.add("active");
-}
-
-function closeModal(){
-photoModal.classList.remove("active");
-}
+function openModal(){if(data.avatar){modalImg.src=data.avatar;photoModal.classList.add("active")}}
+function closeModal(){photoModal.classList.remove("active")}
 
 function openChecklist(t){
-current=t;
 dashboard.classList.add("hidden");
 checklist.classList.remove("hidden");
 title.innerText=t=="me"?"Mudança de Endereço":"Atualização de Plano";
 steps.innerHTML="";
 lists[t].forEach(s=>{
-steps.innerHTML+=`<div class="stage"><label><input type="checkbox" onchange="calc()"> ${s}</label><textarea></textarea></div>`;
+steps.innerHTML+=`<div class="stage"><label class="checkline"><input type="checkbox" onchange="calc()"> ${s}</label><textarea></textarea></div>`;
 });
 start=Date.now();tick();
 }
@@ -279,12 +251,12 @@ setTimeout(tick,1000);
 function calc(){
 let c=[...document.querySelectorAll("input[type=checkbox]")];
 bar.style.width=(c.filter(x=>x.checked).length/c.length*100)+"%";
-saved.classList.remove("hidden");
-setTimeout(()=>saved.classList.add("hidden"),1000);
+saved.classList.remove("hidden");setTimeout(()=>saved.classList.add("hidden"),800);
 }
 
 function finish(){
-data.count++;save();
+data.count=(data.count||0)+1;
+save();
 checklist.classList.add("hidden");
 done.classList.remove("hidden");
 stats.innerText="Atendimentos: "+data.count;
@@ -311,6 +283,8 @@ a.download="checklist.txt";a.click();
 function save(){localStorage[user]=JSON.stringify(data)}
 
 document.addEventListener("keydown",e=>{if(e.key=="Escape")closeModal()});
+
+init();
 </script>
 
 </body>
