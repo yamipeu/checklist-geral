@@ -2,169 +2,135 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checklists de Protocolos</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>📋</text></svg>">
 
 <style>
-:root{
---red:#e02020;
---bg:#0b0b0b;
---card:#161616;
---text:#eee;
-}
-
-*{box-sizing:border-box}
-
-body{
-margin:0;
-font-family:Segoe UI,Arial;
-background:linear-gradient(180deg,#000,#151515);
-color:var(--text);
-}
-
+*{box-sizing:border-box;font-family:Arial}
+body{margin:0;background:#0f0f0f;color:white}
 .hidden{display:none}
 
 header{
-background:#111;
+background:linear-gradient(90deg,#600,#e21);
 padding:15px 30px;
 display:flex;
 justify-content:space-between;
-align-items:center;
-border-bottom:1px solid #222;
+align-items:center
 }
 
 button{
-border:none;
-border-radius:8px;
-padding:10px 18px;
-background:var(--red);
-color:white;
-cursor:pointer;
+background:#e21;border:none;color:white;
+padding:10px 20px;border-radius:6px;
+cursor:pointer
 }
-
-.center{max-width:1100px;margin:40px auto;padding:20px}
+button:hover{opacity:.8}
 
 .card{
-background:var(--card);
-border-radius:16px;
-padding:25px;
-box-shadow:0 15px 40px rgba(0,0,0,.6);
+background:#1b1b1b;
+max-width:900px;
+margin:40px auto;
+padding:30px;
+border-radius:15px;
+animation:fade .4s
 }
 
-input,textarea{
-width:100%;
-margin-top:8px;
-padding:10px;
-border-radius:8px;
-border:none;
-background:#222;
-color:white;
+@keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1}}
+
+input{
+width:100%;padding:10px;border-radius:6px;border:none;margin-bottom:10px
 }
 
-.profile{display:flex;align-items:center;gap:12px}
+.check{
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #333;
+padding:15px 0
+}
 
-.avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--red);cursor:pointer}
+.progress{height:10px;background:#333;border-radius:6px;overflow:hidden}
+.bar{height:100%;background:#e21;width:0%;transition:.3s}
 
-.bigAvatar{width:120px;height:120px;border-radius:50%;border:3px solid var(--red)}
-
-.dashboard{display:grid;grid-template-columns:1fr 2fr;gap:30px}
-
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
-
-.tile{background:#1b1b1b;padding:25px;border-radius:14px;cursor:pointer}
-
-.progress{height:10px;background:#333;border-radius:10px;overflow:hidden;margin:10px 0}
-.progress div{height:100%;background:var(--red);width:0%;transition:.4s}
-
-.stage{margin-top:15px;border-top:1px solid #333;padding-top:10px}
-
-.checkline{display:flex;gap:10px;align-items:flex-start}
-
-.top{display:flex;gap:10px;margin-bottom:15px}
+.avatar{
+width:40px;height:40px;border-radius:50%;
+border:2px solid red;cursor:pointer;object-fit:cover
+}
 
 .modal{
-position:fixed;inset:0;background:rgba(0,0,0,.85);
-display:flex;align-items:center;justify-content:center;
-opacity:0;pointer-events:none;transition:.3s
+position:fixed;inset:0;background:rgba(0,0,0,.7);
+display:flex;align-items:center;justify-content:center
+}
+.modal img{max-width:300px;border-radius:15px}
+
+.dashboard{
+display:grid;grid-template-columns:1fr 1fr;gap:20px
 }
 
-.modal.active{opacity:1;pointer-events:auto}
-.modal img{max-width:80%;border-radius:12px}
+.small{opacity:.7;font-size:14px}
 
-.save{position:fixed;bottom:15px;right:15px;background:#222;padding:6px 14px;border-radius:20px;font-size:12px}
 </style>
 </head>
 
 <body>
 
 <header>
-<b>Checklists de Protocolos</b>
-<div id="userBar" class="profile hidden">
-<img id="avatar" class="avatar">
-<span id="hello"></span>
+<strong>Checklists de Protocolos</strong>
+<div id="topRight" class="hidden">
+<img id="avatarTop" class="avatar">
 <button onclick="logout()">Logout</button>
 </div>
 </header>
 
-<div id="loginScreen" class="center card hidden">
+<!-- LOGIN -->
+<div id="loginScreen" class="card">
 <h2>Login</h2>
 <input id="username" placeholder="Digite seu username">
-<button style="width:100%;margin-top:15px" onclick="doLogin()">Entrar</button>
+<button onclick="doLogin()">Entrar</button>
 </div>
 
-<div id="dashboard" class="center hidden">
+<!-- DASHBOARD -->
+<div id="dashboard" class="card hidden">
+<h2 id="hello"></h2>
+
 <div class="dashboard">
-
-<div class="card">
-<img id="bigAvatar" class="bigAvatar"><br><br>
-<b id="userName"></b>
-<p id="stats"></p>
-<input type="file" onchange="upload(this)">
+<div>
+<p>Total de atendimentos:</p>
+<h1 id="count">0</h1>
 </div>
 
-<div class="card">
-<h2>Escolha o checklist</h2>
-<div class="cards">
-<div class="tile" onclick="openChecklist('me')">Mudança de Endereço</div>
-<div class="tile" onclick="openChecklist('plano')">Atualização de Plano</div>
+<div>
+<input type="file" id="photoInput">
 </div>
 </div>
 
-</div>
+<br>
+
+<button onclick="openChecklist('me')">Mudança de Endereço</button>
+<button onclick="openChecklist('ap')">Atualização de Plano</button>
+
 </div>
 
-<div id="checklist" class="center hidden">
-<div class="top">
-<button onclick="back()">⬅ Dashboard</button>
-<button onclick="resetChecklist()">🔄 Reiniciar</button>
-<button onclick="exportar()">📄 Exportar</button>
-</div>
-
-<div class="card">
+<!-- CHECKLIST -->
+<div id="checklist" class="card hidden">
 <h2 id="title"></h2>
-Tempo: <span id="timer">00:00</span>
-<div class="progress"><div id="bar"></div></div>
-<div id="steps"></div>
-<button style="width:100%;margin-top:20px" onclick="finish()">Finalizar</button>
-</div>
+
+<div class="progress"><div id="bar" class="bar"></div></div><br>
+
+<div id="items"></div><br>
+
+<button onclick="finish()">Finalizar atendimento</button>
+<button onclick="back()">Voltar</button>
 </div>
 
-<div id="done" class="center hidden">
-<div class="card">
-<h2>🎉 Atendimento concluído</h2>
-<button onclick="back()">Novo</button>
+<div id="photoModal" class="modal hidden" onclick="this.classList.add('hidden')">
+<img id="bigPhoto">
 </div>
-</div>
-
-<div id="photoModal" class="modal" onclick="closeModal()">
-<img id="modalImg">
-</div>
-
-<div id="saved" class="save hidden">Salvo automaticamente</div>
 
 <script>
-const lists={
-me:[
+
+const ME=[
 "Informar sobre custo/isenção, pedir para levar o equipamento e informar SLA",
 "Filtrar o novo endereço",
 "Verificar documentos",
@@ -174,8 +140,9 @@ me:[
 "Gerar contrato (verificar informações em sistema)",
 "Abrir a renovação (após o cliente assinar)",
 "Encaminhar para a CS"
-],
-plano:[
+];
+
+const AP=[
 "Informar sobre o processo e benefícios",
 "Verificar documentação e faturas",
 "Abrir a atualização no ERP e preencher",
@@ -184,108 +151,88 @@ plano:[
 "Gerar contrato",
 "Abrir a renovação após a assinatura subir em sistema",
 "Encerrar renovação"
-]
-};
+];
 
-let user,data={},start;
+let currentUser=localStorage.user||"";
 
-function init(){
-user=localStorage.currentUser;
-if(user){
-data=JSON.parse(localStorage[user]||'{"count":0,"avatar":""}');
-showDashboard();
-}else loginScreen.classList.remove("hidden");
-}
+if(currentUser) init();
 
 function doLogin(){
-user=username.value.trim();
-if(!user)return;
-localStorage.currentUser=user;
-data=JSON.parse(localStorage[user]||'{"count":0,"avatar":""}');
-showDashboard();
+currentUser=username.value.trim();
+if(!currentUser)return alert("Digite o nome");
+localStorage.user=currentUser;
+init();
 }
 
-function showDashboard(){
+function init(){
 loginScreen.classList.add("hidden");
 dashboard.classList.remove("hidden");
-userBar.classList.remove("hidden");
-hello.innerText="Olá, "+user;
-userName.innerText=user;
-stats.innerText="Atendimentos: "+(data.count||0);
-if(data.avatar){avatar.src=bigAvatar.src=data.avatar}
+topRight.classList.remove("hidden");
+hello.innerText="Olá, "+currentUser;
+
+count.innerText=localStorage["count_"+currentUser]||0;
+
+let photo=localStorage["photo_"+currentUser];
+if(photo){
+avatarTop.src=photo;
+bigPhoto.src=photo;
+}else avatarTop.src="https://via.placeholder.com/40";
 }
 
-function logout(){localStorage.removeItem("currentUser");location.reload()}
-
-function upload(i){
-let r=new FileReader();
-r.onload=e=>{data.avatar=e.target.result;avatar.src=bigAvatar.src=data.avatar;save()}
-r.readAsDataURL(i.files[0]);
+function logout(){
+localStorage.removeItem("user");
+location.reload();
 }
 
-avatar.onclick=()=>openModal();
-bigAvatar.onclick=()=>openModal();
+photoInput.onchange=e=>{
+const r=new FileReader();
+r.onload=()=>{
+localStorage["photo_"+currentUser]=r.result;
+avatarTop.src=r.result;
+bigPhoto.src=r.result;
+}
+r.readAsDataURL(e.target.files[0]);
+}
 
-function openModal(){if(data.avatar){modalImg.src=data.avatar;photoModal.classList.add("active")}}
-function closeModal(){photoModal.classList.remove("active")}
+avatarTop.onclick=()=>photoModal.classList.remove("hidden");
 
 function openChecklist(t){
 dashboard.classList.add("hidden");
 checklist.classList.remove("hidden");
+items.innerHTML="";
 title.innerText=t=="me"?"Mudança de Endereço":"Atualização de Plano";
-steps.innerHTML="";
-lists[t].forEach(s=>{
-steps.innerHTML+=`<div class="stage"><label class="checkline"><input type="checkbox" onchange="calc()"> ${s}</label><textarea></textarea></div>`;
+
+let arr=t=="me"?ME:AP;
+
+arr.forEach((txt,i)=>{
+items.innerHTML+=`
+<div class="check">
+<span>${txt}</span>
+<input type="checkbox" onchange="update()">
+</div>`;
 });
-start=Date.now();tick();
+
+update();
 }
 
-function tick(){
-if(!checklist.classList.contains("hidden")){
-let d=Math.floor((Date.now()-start)/1000);
-timer.innerText=("0"+Math.floor(d/60)).slice(-2)+":"+("0"+d%60).slice(-2);
-setTimeout(tick,1000);
-}
-}
-
-function calc(){
+function update(){
 let c=[...document.querySelectorAll("input[type=checkbox]")];
-bar.style.width=(c.filter(x=>x.checked).length/c.length*100)+"%";
-saved.classList.remove("hidden");setTimeout(()=>saved.classList.add("hidden"),800);
+let done=c.filter(x=>x.checked).length;
+bar.style.width=(done/c.length*100)+"%";
 }
 
 function finish(){
-data.count=(data.count||0)+1;
-save();
-checklist.classList.add("hidden");
-done.classList.remove("hidden");
-stats.innerText="Atendimentos: "+data.count;
+let k="count_"+currentUser;
+localStorage[k]=(Number(localStorage[k]||0)+1);
+alert("Atendimento finalizado!");
+location.reload();
 }
 
 function back(){
-done.classList.add("hidden");
 checklist.classList.add("hidden");
 dashboard.classList.remove("hidden");
 }
 
-function resetChecklist(){
-document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);
-bar.style.width="0%";
-}
-
-function exportar(){
-let t=[...document.querySelectorAll(".stage")].map(x=>x.innerText).join("\n");
-let a=document.createElement("a");
-a.href="data:text/plain,"+encodeURIComponent(t);
-a.download="checklist.txt";a.click();
-}
-
-function save(){localStorage[user]=JSON.stringify(data)}
-
-document.addEventListener("keydown",e=>{if(e.key=="Escape")closeModal()});
-
-init();
 </script>
-
 </body>
 </html>
