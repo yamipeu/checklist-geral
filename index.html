@@ -154,10 +154,10 @@ background:#222;padding:6px 14px;border-radius:20px;font-size:12px
 </div>
 </header>
 
-<div id="login" class="center card">
+<div id="loginScreen" class="center card">
 <h2>Login</h2>
 <input id="username" placeholder="Digite seu username">
-<button onclick="login()" style="margin-top:15px;width:100%">Entrar</button>
+<button onclick="doLogin()" style="margin-top:15px;width:100%">Entrar</button>
 </div>
 
 <div id="dashboard" class="center hidden">
@@ -184,7 +184,7 @@ background:#222;padding:6px 14px;border-radius:20px;font-size:12px
 <div id="checklist" class="center hidden">
 <div class="top">
 <button onclick="back()">⬅ Dashboard</button>
-<button onclick="reset()">🔄 Reiniciar</button>
+<button onclick="resetChecklist()">🔄 Reiniciar</button>
 <button onclick="exportar()">📄 Exportar</button>
 </div>
 
@@ -218,11 +218,11 @@ me:["Informar SLA","Filtrar endereço","Verificar docs","Verificar ME","Abrir ME
 plano:["Informar processo","Verificar docs","Abrir ERP","Conferir","Enviar vídeo","Gerar contrato","Abrir renovação","Encerrar"]
 };
 
-function login(){
+function doLogin(){
 user=username.value.trim();
 if(!user)return;
 data=JSON.parse(localStorage[user]||'{"count":0,"avatar":""}');
-login.classList.add("hidden");
+loginScreen.classList.add("hidden");
 dashboard.classList.remove("hidden");
 userBar.classList.remove("hidden");
 hello.innerText="Olá, "+user;
@@ -247,6 +247,7 @@ avatar.onclick=()=>openModal();
 bigAvatar.onclick=()=>openModal();
 
 function openModal(){
+if(!data.avatar)return;
 modalImg.src=data.avatar;
 photoModal.classList.add("active");
 }
@@ -295,7 +296,7 @@ checklist.classList.add("hidden");
 dashboard.classList.remove("hidden");
 }
 
-function reset(){
+function resetChecklist(){
 document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);
 bar.style.width="0%";
 }
