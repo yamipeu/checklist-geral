@@ -5,6 +5,7 @@
     <title>Checklist de Protocolos Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
@@ -41,9 +42,6 @@
             position: sticky; top: 0; z-index: 1000;
         }
 
-        .user-header-info { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-
         .layout { display: flex; min-height: calc(100vh - 75px); }
 
         aside {
@@ -74,7 +72,7 @@
 
         main { flex: 1; padding: 40px; max-width: 1100px; margin: 0 auto; }
 
-        /* CARDS & CHECKLIST */
+        /* CARDS */
         .card {
             background: var(--panel);
             border-radius: 16px;
@@ -83,30 +81,26 @@
             border: 1px solid var(--border);
         }
 
-        .card.checked { opacity: 0.6; border-color: rgba(225, 29, 46, 0.2); }
+        .card.checked { opacity: 0.5; border-color: rgba(225, 29, 46, 0.2); }
         .card.checked span { text-decoration: line-through; color: var(--muted); }
-
-        /* MODO COMPACTO */
-        .compact-mode .card { padding: 10px 20px; margin-bottom: 8px; }
-        .compact-mode textarea { display: none; }
 
         textarea {
             width: 100%;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             border: 1px solid var(--border);
             border-radius: 10px;
             color: #ccc;
             padding: 12px;
             margin-top: 10px;
             resize: none;
+            font-family: inherit;
         }
 
-        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+        input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--primary); cursor: pointer; }
 
         progress { width: 100%; height: 10px; border-radius: 10px; margin-top: 10px; }
         progress::-webkit-progress-value { background: var(--primary); border-radius: 10px; }
 
-        /* BUTTONS */
         .btn {
             background: var(--primary);
             color: white;
@@ -114,9 +108,9 @@
             padding: 12px 24px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
+            font-size: 11px;
         }
 
         .btn-outline {
@@ -133,38 +127,22 @@
         .btn-outline:hover { background: #222; color: #fff; }
 
         .view { display: none; }
-        .view.active { display: block; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
 
-        /* LOGIN */
-        .login-screen {
-            max-width: 400px;
-            margin: 100px auto;
-            background: var(--panel);
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        input[type="text"] {
-            width: 100%;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 10px;
-            background: #000;
-            border: 1px solid var(--border);
-            color: #fff;
-            text-align: center;
-        }
+        /* MODO COMPACTO */
+        .compact-mode .card { padding: 10px 20px; margin-bottom: 8px; }
+        .compact-mode textarea { display: none; }
     </style>
 </head>
-<body class="">
+<body>
 
 <header>
-    <div style="font-weight: 800; color: var(--primary);">CHECKLIST PRO</div>
-    <div class="user-header-info" id="user-header" style="display: none;">
+    <div style="font-weight: 800; color: var(--primary); letter-spacing: 1px;">CHECKLIST DE PROTOCOLOS</div>
+    <div class="user-header-info" id="user-header" style="display: none; align-items: center; gap: 12px;">
         <span id="header-username" style="font-size: 12px; color: var(--muted);"></span>
-        <img id="header-avatar" class="avatar" src="">
+        <img id="header-avatar" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover;" src="">
         <button class="btn-outline" onclick="logout()">SAIR</button>
     </div>
 </header>
@@ -172,38 +150,43 @@
 <div class="layout">
     <aside id="sidebar" style="display: none;">
         <button id="nav-dash" onclick="irParaDashboard()">🏠 Dashboard</button>
-        <button id="nav-ME" onclick="abrirChecklist('ME')">📍 Mudança Endereço</button>
-        <button id="nav-PL" onclick="abrirChecklist('PL')">📊 Atualização Plano</button>
+        <button id="nav-ME" onclick="abrirChecklist('ME')">📍 Mudança de Endereço</button>
+        <button id="nav-PL" onclick="abrirChecklist('PL')">📊 Atualização de Plano</button>
     </aside>
 
     <main>
         <div id="view-login" class="view active">
-            <div class="login-screen">
-                <h2>BEM-VINDO</h2>
-                <input type="text" id="login-name" placeholder="Digite seu nome">
-                <button class="btn" style="width: 100%" onclick="login()">ACESSAR</button>
+            <div style="max-width: 400px; margin: 100px auto; background: var(--panel); padding: 45px; border-radius: 24px; text-align: center; border: 1px solid var(--border);">
+                <h2>Acesso ao Painel</h2>
+                <input type="text" id="login-name" placeholder="Digite seu nome" style="width: 100%; padding: 15px; margin: 20px 0; border-radius: 10px; background: #000; border: 1px solid var(--border); color: #fff; text-align: center;">
+                <button class="btn" style="width: 100%; padding: 18px;" onclick="login()">ENTRAR</button>
             </div>
         </div>
 
         <div id="view-dash" class="view">
-            <div style="text-align: center; background: var(--panel); padding: 40px; border-radius: 20px; border: 1px solid var(--border);">
-                <img id="dash-avatar" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px; object-fit: cover;">
-                <h2 id="welcome-name" style="margin: 0;"></h2>
-                <label style="color: var(--primary); font-size: 12px; cursor: pointer; font-weight: 700;">
-                    ALTERAR FOTO <input type="file" hidden accept="image/*" onchange="atualizarFoto(event)">
-                </label>
-                <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
-                    <p style="font-size: 11px; color: var(--muted); margin-bottom: 5px;">TOTAL DE ATENDIMENTOS</p>
-                    <h3 id="user-total-count" style="font-size: 50px; margin: 0; color: var(--primary);">0</h3>
+            <div style="background: var(--panel); padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center;">
+                <img id="dash-avatar" style="width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px; object-fit: cover;">
+                <h2 id="welcome-name" style="margin: 0; font-size: 32px;"></h2>
+                <label style="color: var(--primary); font-size: 12px; cursor: pointer; font-weight: 700;">ALTERAR FOTO <input type="file" hidden onchange="atualizarFoto(event)"></label>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;">
+                    <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; border: 1px solid var(--border);">
+                        <p style="font-size: 10px; color: var(--muted); margin: 0;">FEITOS HOJE</p>
+                        <h3 id="count-hoje" style="font-size: 42px; margin: 5px 0; color: #fff;">0</h3>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; border: 1px solid var(--border);">
+                        <p style="font-size: 10px; color: var(--muted); margin: 0;">TOTAL ACUMULADO</p>
+                        <h3 id="count-total" style="font-size: 42px; margin: 5px 0; color: var(--primary);">0</h3>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="view-app" class="view">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
                 <div>
-                    <button class="btn-outline" onclick="irParaDashboard()">← VOLTAR</button>
-                    <h2 id="checklist-titulo" style="margin: 10px 0 0 0;"></h2>
+                    <button class="btn-outline" onclick="irParaDashboard()" style="margin-bottom: 10px;">← VOLTAR</button>
+                    <h2 id="checklist-titulo" style="margin: 0;"></h2>
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <button class="btn-outline" onclick="toggleCompacto()">VISTA COMPACTA</button>
@@ -219,7 +202,6 @@
                 </div>
                 <progress id="barra-progresso" value="0"></progress>
             </div>
-
             <div id="lista-itens"></div>
         </div>
     </main>
@@ -229,33 +211,70 @@
     let usuarioLogado = "";
     let checklistAtual = "";
 
-    const dadosChecklists = {
-        ME: ["Informar taxa/isenção, SLA e excedente", "Verificar financeiro", "Verificar documentação", "Informações novo endereço", "Abrir ME no ERP", "Abrir Atualização se isento", "Encaminhar FAT", "Gerar contrato", "Abrir Renovação após assinatura", "Encerrar Renovação", "Encaminhar CS"],
-        PL: ["Verificar atualização disponível", "Verificar financeiro", "Verificar documentação", "Informar processo/fidelidade", "Abrir protocolo de Atualização", "Encaminhar FAT", "Enviar vídeo assinatura", "Gerar contrato", "Abrir Renovação após assinatura", "Encerrar Renovação"]
+    const dados = {
+        ME: [
+            "Informar sobre a taxa do serviço ou isenção (caso esteja disponível), SLA e custo de excedente",
+            "Verificar situação do financeiro",
+            "Verificar documentação e informações",
+            "Colher informações sobre o novo endereço",
+            "Abrir ''Mudança de Endereço'' no ERP",
+            "Em caso de isenção e possuir atualização de plano, abrir ''Atualização de Plano''",
+            "Encaminhar para o FAT",
+            "Gerar contrato (Verificar documentação e informações)",
+            "Abrir ''Renovação contratual'' após a assinatura do contrato",
+            "Encerrar Renovação",
+            "Encaminhar para a CS"
+        ],
+        PL: [
+            "Verificar em sistema a atualização disponível",
+            "Verificar financeiro",
+            "Verificar documentação e informações",
+            "Informar sobre o processo e assinatura do contrato com renovação da fidelidade",
+            "Abrir o protocolo de ''Atualização de Plano''",
+            "Encaminhar para o FAT",
+            "Enviar o vídeo para assinatura do contrato",
+            "Gerar contrato (Verificar documentação e informações)",
+            "Abrir ''Renovação contratual'' após a assinatura do contrato",
+            "Encerrar Renovação"
+        ]
     };
 
     function login() {
         const nome = document.getElementById("login-name").value.trim().toLowerCase();
         if (!nome) return;
         usuarioLogado = nome;
-        if (!localStorage.getItem("user_data_" + usuarioLogado)) {
-            localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify({ nome: nome, atendimentos: 0, foto: "https://ui-avatars.com/api/?name="+nome+"&background=e11d2e&color=fff" }));
+        if (!localStorage.getItem("user_pro_" + nome)) {
+            localStorage.setItem("user_pro_" + nome, JSON.stringify({ 
+                nome: nome, total: 0, hoje: 0, 
+                ultimaData: new Date().toLocaleDateString(), 
+                foto: `https://ui-avatars.com/api/?name=${nome}&background=e11d2e&color=fff` 
+            }));
         }
         irParaDashboard();
     }
 
     function irParaDashboard() {
-        const data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
+        let data = JSON.parse(localStorage.getItem("user_pro_" + usuarioLogado));
+        
+        // Reset do contador diário
+        if (data.ultimaData !== new Date().toLocaleDateString()) {
+            data.hoje = 0;
+            data.ultimaData = new Date().toLocaleDateString();
+            localStorage.setItem("user_pro_" + usuarioLogado, JSON.stringify(data));
+        }
+
         document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
         document.getElementById("view-dash").classList.add("active");
         document.getElementById("sidebar").style.display = "block";
         document.getElementById("user-header").style.display = "flex";
         document.getElementById("view-login").classList.remove("active");
+
         document.getElementById("header-username").innerText = data.nome.toUpperCase();
         document.getElementById("header-avatar").src = data.foto;
         document.getElementById("dash-avatar").src = data.foto;
         document.getElementById("welcome-name").innerText = "Olá, " + data.nome;
-        document.getElementById("user-total-count").innerText = data.atendimentos;
+        document.getElementById("count-hoje").innerText = data.hoje;
+        document.getElementById("count-total").innerText = data.total;
     }
 
     function abrirChecklist(tipo) {
@@ -265,14 +284,16 @@
         document.getElementById("checklist-titulo").innerText = tipo === 'ME' ? "Mudança de Endereço" : "Atualização de Plano";
 
         const container = document.getElementById("lista-itens");
-        container.innerHTML = dadosChecklists[tipo].map((item, idx) => `
+        container.innerHTML = dados[tipo].map((item, idx) => `
             <div class="card" id="card-${idx}">
-                <label><input type="checkbox" onchange="marcarCard(this, ${idx})"> <span>${item}</span></label>
+                <label style="display: flex; gap: 15px; align-items: center; cursor: pointer;">
+                    <input type="checkbox" onchange="marcarCard(this, ${idx})">
+                    <span style="font-weight: 500;">${item}</span>
+                </label>
                 <textarea placeholder="Notas..." oninput="salvarTemp()"></textarea>
             </div>
         `).join('');
-
-        document.getElementById("barra-progresso").max = dadosChecklists[tipo].length;
+        document.getElementById("barra-progresso").max = dados[tipo].length;
         carregarTemp();
     }
 
@@ -284,7 +305,7 @@
     }
 
     function atualizarProgresso() {
-        const checks = document.querySelectorAll("#lista-itens input[type='checkbox']");
+        const checks = document.querySelectorAll("#lista-itens input");
         const marcados = [...checks].filter(c => c.checked).length;
         document.getElementById("barra-progresso").value = marcados;
         document.getElementById("pct-texto").innerText = Math.round((marcados / checks.length) * 100) + "%";
@@ -308,41 +329,44 @@
     }
 
     function copiarResumo() {
-        let resumo = `PROTOCOLO: ${checklistAtual}\nOperador: ${usuarioLogado}\n---\n`;
-        document.querySelectorAll("#lista-itens .card").forEach(card => {
-            if (card.querySelector("input").checked) {
-                resumo += `[OK] ${card.querySelector("span").innerText}\n`;
-                const nota = card.querySelector("textarea").value;
-                if (nota) resumo += `   Nota: ${nota}\n`;
+        let r = `RESUMO: ${checklistAtual} | OPERADOR: ${usuarioLogado.toUpperCase()}\n---\n`;
+        document.querySelectorAll("#lista-itens .card").forEach(c => {
+            if (c.querySelector("input").checked) {
+                r += `[OK] ${c.querySelector("span").innerText}\n`;
+                const nota = c.querySelector("textarea").value;
+                if(nota) r += `     Nota: ${nota}\n`;
             }
         });
-        navigator.clipboard.writeText(resumo);
-        alert("Resumo copiado para o ERP!");
+        navigator.clipboard.writeText(r);
+        alert("Resumo copiado!");
     }
 
     function finalizarAtendimento() {
-        const pendentes = [...document.querySelectorAll("#lista-itens input")].filter(x => !x.checked).length;
-        if (pendentes > 0 && !confirm(`Ainda faltam ${pendentes} itens. Finalizar assim mesmo?`)) return;
+        const faltam = [...document.querySelectorAll("#lista-itens input")].filter(x => !x.checked).length;
+        if (faltam > 0 && !confirm(`Faltam ${faltam} itens. Finalizar mesmo assim?`)) return;
 
-        let data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
-        data.atendimentos++;
-        localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify(data));
+        let data = JSON.parse(localStorage.getItem("user_pro_" + usuarioLogado));
+        data.total++;
+        data.hoje++;
+        localStorage.setItem("user_pro_" + usuarioLogado, JSON.stringify(data));
         localStorage.removeItem(`save_${usuarioLogado}_${checklistAtual}`);
-        irParaDashboard();
+
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#e11d2e', '#ffffff'] });
+        setTimeout(irParaDashboard, 1500);
     }
 
     function toggleCompacto() { document.body.classList.toggle("compact-mode"); }
+    function logout() { location.reload(); }
     function atualizarFoto(e) {
         const reader = new FileReader();
         reader.onload = () => {
-            let data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
-            data.foto = reader.result;
-            localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify(data));
+            let d = JSON.parse(localStorage.getItem("user_pro_" + usuarioLogado));
+            d.foto = reader.result;
+            localStorage.setItem("user_pro_" + usuarioLogado, JSON.stringify(d));
             irParaDashboard();
         };
         reader.readAsDataURL(e.target.files[0]);
     }
-    function logout() { location.reload(); }
 </script>
 </body>
 </html>
