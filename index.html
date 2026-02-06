@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Checklist Protocolos Ultimate</title>
+    <title>Checklist Protocolos Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -49,43 +49,39 @@
 
         main { flex: 1; padding: 40px; max-width: 1100px; margin: 0 auto; }
 
-        /* CARDS E ANIMAÇÃO DE CONCLUSÃO */
+        /* --- ANIMAÇÃO DE ITEM CONCLUÍDO --- */
         .card { 
             background: var(--panel); 
-            border-radius: 16px; 
-            padding: 20px; 
-            margin-bottom: 15px; 
+            border-radius: 16px; padding: 20px; margin-bottom: 15px; 
             border: 1px solid var(--border);
             position: relative;
         }
 
-        /* Animação quando marcado */
         .card.checked { 
             opacity: 0.5; 
             border-color: var(--primary); 
-            animation: itemComplete 0.4s ease-out;
+            animation: itemPulse 0.4s ease-out; /* Trigger da animação */
         }
 
-        @keyframes itemComplete {
+        @keyframes itemPulse {
             0% { transform: scale(1); box-shadow: 0 0 0px rgba(225, 29, 46, 0); }
-            50% { transform: scale(1.02); box-shadow: 0 0 20px rgba(225, 29, 46, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 20px rgba(225, 29, 46, 0.4); border-color: var(--primary-soft); }
             100% { transform: scale(1); box-shadow: 0 0 0px rgba(225, 29, 46, 0); }
         }
 
         .card.checked span { text-decoration: line-through; color: var(--muted); }
+
+        input[type="checkbox"] { 
+            width: 24px; height: 24px; accent-color: var(--primary); cursor: pointer; 
+        }
+        
+        input[type="checkbox"]:active { transform: scale(1.3); } /* Efeito Pop no clique */
 
         textarea { 
             width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); 
             border-radius: 10px; color: #ccc; padding: 12px; margin-top: 10px; 
             resize: none; font-family: inherit; 
         }
-
-        input[type="checkbox"] { 
-            width: 24px; height: 24px; accent-color: var(--primary); 
-            cursor: pointer; transition: transform 0.2s ease;
-        }
-        
-        input[type="checkbox"]:active { transform: scale(1.4); }
 
         progress { width: 100%; height: 10px; border-radius: 10px; margin-top: 10px; }
         progress::-webkit-progress-value { background: var(--primary); border-radius: 10px; }
@@ -96,8 +92,8 @@
 
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
 
-        /* MODO COMPACTO */
         .compact-mode .card { padding: 10px 20px; margin-bottom: 8px; }
         .compact-mode textarea { display: none; }
     </style>
@@ -105,7 +101,7 @@
 <body>
 
 <header>
-    <div style="font-weight: 800; color: var(--primary); letter-spacing: 1px;">CHECKLIST PRO v3.5</div>
+    <div style="font-weight: 800; color: var(--primary); letter-spacing: 1px;">CHECKLIST PRO</div>
     <div class="user-header-info" id="user-header" style="display: none; align-items: center; gap: 12px;">
         <span id="header-username" style="font-size: 11px; font-weight: 600;"></span>
         <img id="header-avatar" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover;" src="">
@@ -118,16 +114,13 @@
         <button onclick="irParaDashboard()">🏠 Dashboard</button>
         <button onclick="abrirChecklist('ME')">📍 Mudança Endereço</button>
         <button onclick="abrirChecklist('PL')">📊 Atualização Plano</button>
-        <div style="margin-top: 40px; padding: 10px; border-top: 1px solid var(--border);">
-            <button class="btn-outline" style="width: 100%;" onclick="exportarDados()">💾 BACKUP DADOS</button>
-        </div>
     </aside>
 
     <main>
         <div id="view-login" class="view active">
             <div style="max-width: 400px; margin: 100px auto; background: var(--panel); padding: 45px; border-radius: 24px; text-align: center; border: 1px solid var(--border);">
-                <h2>Identificação</h2>
-                <input type="text" id="login-name" placeholder="Digite seu nome" style="width: 100%; padding: 15px; margin: 20px 0; border-radius: 10px; background: #000; border: 1px solid var(--border); color: #fff; text-align: center;">
+                <h2>Acesso</h2>
+                <input type="text" id="login-name" placeholder="Seu nome" style="width: 100%; padding: 15px; margin: 20px 0; border-radius: 10px; background: #000; border: 1px solid var(--border); color: #fff; text-align: center;">
                 <button class="btn" style="width: 100%;" onclick="login()">ENTRAR</button>
             </div>
         </div>
@@ -160,7 +153,7 @@
             </div>
             <div style="background: var(--panel); padding: 20px; border-radius: 12px; border-left: 4px solid var(--primary); margin-bottom: 25px;">
                 <progress id="barra-progresso" value="0"></progress>
-                <div id="pct-texto" style="font-size: 12px; margin-top: 8px; color: var(--primary-soft); font-weight: 700;">0% CONCLUÍDO</div>
+                <div id="pct-texto" style="font-size: 12px; margin-top: 8px; color: var(--primary-soft); font-weight: 700;">0%</div>
             </div>
             <div id="lista-itens"></div>
         </div>
@@ -180,15 +173,15 @@
         const nome = document.getElementById("login-name").value.trim().toLowerCase();
         if (!nome) return;
         usuarioLogado = nome;
-        if (!localStorage.getItem("pro_v3_" + nome)) {
-            localStorage.setItem("pro_v3_" + nome, JSON.stringify({ nome: nome, total: 0, hoje: 0, data: new Date().toLocaleDateString(), foto: `https://ui-avatars.com/api/?name=${nome}&background=e11d2e&color=fff` }));
+        if (!localStorage.getItem("pro_v4_" + nome)) {
+            localStorage.setItem("pro_v4_" + nome, JSON.stringify({ nome: nome, total: 0, hoje: 0, data: new Date().toLocaleDateString(), foto: `https://ui-avatars.com/api/?name=${nome}&background=e11d2e&color=fff` }));
         }
         irParaDashboard();
     }
 
     function irParaDashboard() {
-        let d = JSON.parse(localStorage.getItem("pro_v3_" + usuarioLogado));
-        if (d.data !== new Date().toLocaleDateString()) { d.hoje = 0; d.data = new Date().toLocaleDateString(); localStorage.setItem("pro_v3_" + usuarioLogado, JSON.stringify(d)); }
+        let d = JSON.parse(localStorage.getItem("pro_v4_" + usuarioLogado));
+        if (d.data !== new Date().toLocaleDateString()) { d.hoje = 0; d.data = new Date().toLocaleDateString(); localStorage.setItem("pro_v4_" + usuarioLogado, JSON.stringify(d)); }
         document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
         document.getElementById("view-dash").classList.add("active");
         document.getElementById("sidebar").style.display = "block";
@@ -222,11 +215,7 @@
 
     function marcarCard(input, idx) {
         const card = document.getElementById(`card-${idx}`);
-        if(input.checked) {
-            card.classList.add('checked');
-        } else {
-            card.classList.remove('checked');
-        }
+        input.checked ? card.classList.add('checked') : card.classList.remove('checked');
         salvarTemp(); atualizarProgresso();
     }
 
@@ -246,10 +235,7 @@
     function carregarTemp() {
         const s = JSON.parse(localStorage.getItem(`temp_${usuarioLogado}_${checklistAtual}`));
         if (!s) return atualizarProgresso();
-        document.querySelectorAll("#lista-itens input").forEach((x, i) => { 
-            x.checked = s.c[i]; 
-            if(x.checked) x.closest('.card').classList.add('checked'); 
-        });
+        document.querySelectorAll("#lista-itens input").forEach((x, i) => { x.checked = s.c[i]; if(x.checked) x.closest('.card').classList.add('checked'); });
         document.querySelectorAll("#lista-itens textarea").forEach((x, i) => x.value = s.t[i]);
         atualizarProgresso();
     }
@@ -263,39 +249,21 @@
                 if(nota) r += `     Nota: ${nota}\n`;
             }
         });
-        navigator.clipboard.writeText(r); alert("Resumo pronto para colar no ERP!");
+        navigator.clipboard.writeText(r); alert("Copiado!");
     }
 
     function finalizarAtendimento() {
         const faltam = [...document.querySelectorAll("#lista-itens input")].filter(x => !x.checked).length;
-        if (faltam > 0 && !confirm(`Ainda faltam ${faltam} itens. Finalizar mesmo assim?`)) return;
-        
-        let d = JSON.parse(localStorage.getItem("pro_v3_" + usuarioLogado));
-        d.total++; d.hoje++; localStorage.setItem("pro_v3_" + usuarioLogado, JSON.stringify(d));
+        if (faltam > 0 && !confirm(`Faltam ${faltam} itens. Finalizar?`)) return;
+        let d = JSON.parse(localStorage.getItem("pro_v4_" + usuarioLogado));
+        d.total++; d.hoje++; localStorage.setItem("pro_v4_" + usuarioLogado, JSON.stringify(d));
         localStorage.removeItem(`temp_${usuarioLogado}_${checklistAtual}`);
-        
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#e11d2e', '#ffffff'] });
         setTimeout(irParaDashboard, 1500);
     }
 
-    function exportarDados() {
-        const dadosStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage));
-        const link = document.createElement('a');
-        link.setAttribute("href", dadosStr); link.setAttribute("download", `backup_checklist_${usuarioLogado}.json`);
-        document.body.appendChild(link); link.click(); link.remove();
-    }
-
     function toggleCompacto() { document.body.classList.toggle("compact-mode"); }
     function logout() { location.reload(); }
-    function atualizarFoto(e) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            let d = JSON.parse(localStorage.getItem("pro_v3_" + usuarioLogado));
-            d.foto = reader.result; localStorage.setItem("pro_v3_" + usuarioLogado, JSON.stringify(d));
-            irParaDashboard();
-        };
-        reader.readAsDataURL(e.target.files[0]);
-    }
 </script>
 </body>
 </html>
