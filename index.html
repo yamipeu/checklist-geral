@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Checklists de Protocolos</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 :root{
 --red:#d72626;
---bg:#0c0c0c;
+--bg:#0b0b0b;
 --card:#161616;
 }
 
@@ -21,7 +21,7 @@ background:var(--bg);
 color:white;
 }
 
-.hidden{display:none}
+.hidden{opacity:0;pointer-events:none}
 
 header{
 background:#111;
@@ -122,6 +122,14 @@ background:rgba(0,0,0,.8);
 display:flex;
 align-items:center;
 justify-content:center;
+opacity:0;
+pointer-events:none;
+transition:.3s;
+}
+
+.modal.active{
+opacity:1;
+pointer-events:auto;
 }
 
 .modal img{
@@ -191,7 +199,7 @@ margin-bottom:15px;
 </div>
 </div>
 
-<div id="photoModal" class="modal hidden" onclick="closePhoto()">
+<div id="photoModal" class="modal" onclick="closePhoto()">
 <img id="bigPhoto">
 </div>
 
@@ -251,7 +259,7 @@ function showDashboard(){
 
  let u=JSON.parse(localStorage[user]);
  count.innerText=u.count;
- if(u.photo){avatar.src=u.photo}else avatar.src="https://via.placeholder.com/60";
+ avatar.src=u.photo||"https://via.placeholder.com/60";
 }
 
 function upload(i){
@@ -265,8 +273,14 @@ function upload(i){
  r.readAsDataURL(i.files[0]);
 }
 
-avatar.onclick=()=>{bigPhoto.src=avatar.src;photoModal.classList.remove("hidden")}
-function closePhoto(){photoModal.classList.add("hidden")}
+avatar.onclick=()=>{
+ bigPhoto.src=avatar.src;
+ photoModal.classList.add("active");
+};
+
+function closePhoto(){
+ photoModal.classList.remove("active");
+}
 
 function openChecklist(type){
  dashboard.classList.add("hidden");
