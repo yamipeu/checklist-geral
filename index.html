@@ -122,6 +122,11 @@ display:flex;
 align-items:center;
 justify-content:center;
 z-index:10;
+pointer-events:none;
+}
+
+.modal:not(.hidden){
+pointer-events:auto;
 }
 
 .modal img{
@@ -327,3 +332,4 @@ a.click();
 </script>
 </body>
 </html>
+
