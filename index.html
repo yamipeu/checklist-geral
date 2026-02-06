@@ -44,25 +44,10 @@ padding:0 24px;
 border-bottom:1px solid #222;
 }
 
-.logo{
-display:flex;
-align-items:center;
-gap:10px;
-font-weight:700;
-}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700}
+.logo img{height:30px;background:white;border-radius:6px;padding:4px}
 
-.logo img{
-height:30px;
-background:white;
-border-radius:6px;
-padding:4px;
-}
-
-.top{
-display:flex;
-align-items:center;
-gap:12px;
-}
+.top{display:flex;align-items:center;gap:12px}
 
 .badge{
 background:var(--primary);
@@ -71,11 +56,16 @@ border-radius:999px;
 font-size:12px;
 }
 
-/* LAYOUT */
-.layout{
-display:flex;
-min-height:calc(100vh - 60px);
+.avatar{
+width:34px;
+height:34px;
+border-radius:50%;
+object-fit:cover;
+background:#333;
 }
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 60px)}
 
 /* SIDEBAR */
 aside{
@@ -98,15 +88,10 @@ cursor:pointer;
 transition:.2s;
 }
 
-aside button:hover{
-background:#1f1f1f;
-}
+aside button:hover{background:#1f1f1f}
 
 /* MAIN */
-main{
-flex:1;
-padding:28px;
-}
+main{flex:1;padding:28px}
 
 /* DASHBOARD */
 .dashboard{
@@ -140,9 +125,7 @@ box-shadow:0 6px 20px rgba(0,0,0,.25);
 animation:fade .3s ease;
 }
 
-@keyframes fade{
-from{opacity:0;transform:translateY(8px)}
-}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
 
 textarea{
 width:100%;
@@ -176,20 +159,8 @@ transition:.2s;
 
 .btn:hover{filter:brightness(1.1)}
 
-.btn-outline{
-background:var(--primary);
-color:white;
-border:none;
-padding:10px 16px;
-border-radius:8px;
-cursor:pointer;
-}
-
 /* LOGIN */
-.login{
-text-align:center;
-margin-top:120px;
-}
+.login{text-align:center;margin-top:120px}
 
 .login input{
 padding:12px;
@@ -198,6 +169,16 @@ border:1px solid #444;
 width:260px;
 background:transparent;
 color:inherit;
+}
+
+/* PROFILE */
+.profile-upload input{display:none}
+.profile-upload label{
+display:inline-block;
+margin-top:8px;
+cursor:pointer;
+color:var(--primary);
+font-size:14px;
 }
 
 /* VIEWS */
@@ -220,9 +201,11 @@ main{padding:16px}
 </div>
 
 <div class="top">
+<img id="avatarTop" class="avatar">
 <span id="user"></span>
 <span class="badge" id="count">0</span>
 <button class="btn" onclick="toggleTema()">Tema</button>
+<button class="btn" onclick="logout()">Logout</button>
 </div>
 </header>
 
@@ -245,14 +228,20 @@ main{padding:16px}
 
 <div id="dashboard" class="view">
 
-<h2>Dashboard</h2>
+<h2>Olá, <span id="dashUser"></span> 👋</h2>
 
-<div class="dashboard">
-<div class="dash-card">
-<strong>Usuário</strong>
-<p id="dashUser"></p>
+<div class="profile-upload">
+<img id="avatarDash" class="avatar">
+<br>
+<label>
+Alterar foto
+<input type="file" accept="image/*" onchange="uploadFoto(event)">
+</label>
 </div>
 
+<br>
+
+<div class="dashboard">
 <div class="dash-card">
 <strong>Atendimentos</strong>
 <p id="dashCount"></p>
@@ -332,10 +321,17 @@ mostrarDashboard();
 function mostrarDashboard(){
 document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
 dashboard.classList.add("active");
+
 user.innerText=localStorage.getItem("user");
 dashUser.innerText=localStorage.getItem("user");
 dashCount.innerText=localStorage.getItem("count")||0;
 count.innerText=localStorage.getItem("count")||0;
+
+const foto=localStorage.getItem("foto");
+if(foto){
+avatarTop.src=foto;
+avatarDash.src=foto;
+}
 }
 
 function abrir(t){
@@ -398,6 +394,22 @@ function exportar(){window.print()}
 
 function toggleTema(){
 document.body.classList.toggle("dark");
+}
+
+function logout(){
+localStorage.removeItem("user");
+location.reload();
+}
+
+function uploadFoto(e){
+const file=e.target.files[0];
+const reader=new FileReader();
+reader.onload=()=>{
+localStorage.setItem("foto",reader.result);
+avatarTop.src=reader.result;
+avatarDash.src=reader.result;
+};
+reader.readAsDataURL(file);
 }
 </script>
 
