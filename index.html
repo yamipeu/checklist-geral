@@ -61,7 +61,7 @@
         .layout { display: flex; min-height: calc(100vh - 75px); }
 
         aside {
-            width: 250px;
+            width: 260px;
             background: rgba(0, 0, 0, 0.4);
             padding: 30px 15px;
             border-right: 1px solid var(--border);
@@ -123,6 +123,14 @@
             border: 1px solid var(--border);
         }
 
+        .card label {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
         textarea {
             width: 100%;
             background: #000;
@@ -145,7 +153,7 @@
         progress::-webkit-progress-bar { background: #222; border-radius: 10px; }
         progress::-webkit-progress-value { background: var(--primary); border-radius: 10px; }
 
-        /* BUTTONS */
+        /* BOTÕES */
         .btn {
             background: var(--primary);
             color: white;
@@ -155,7 +163,7 @@
             cursor: pointer;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 12px;
+            font-size: 11px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -194,15 +202,15 @@
 <header>
     <div style="font-weight: 800; letter-spacing: 1px; color: var(--primary);">CHECKLIST DE PROTOCOLOS</div>
     <div class="user-header-info" id="user-header" style="display: none;">
-        <span id="header-username" style="font-weight: 600;"></span>
+        <span id="header-username" style="font-weight: 600; font-size: 14px;"></span>
         <img id="header-avatar" class="avatar" src="">
-        <button class="btn-outline" onclick="logout()" style="padding: 6px 12px; font-size: 11px;">SAIR</button>
+        <button class="btn-outline" onclick="logout()" style="padding: 6px 12px; font-size: 10px; cursor: pointer;">SAIR</button>
     </div>
 </header>
 
 <div class="layout">
     <aside id="sidebar" style="display: none;">
-        <button id="nav-dash" onclick="irParaDashboard()">Dashboard</button>
+        <button id="nav-dash" onclick="irParaDashboard()">Início / Dashboard</button>
         <button id="nav-ME" onclick="abrirChecklist('ME')">Mudança de Endereço</button>
         <button id="nav-PL" onclick="abrirChecklist('PL')">Atualização de Plano</button>
     </aside>
@@ -210,10 +218,10 @@
     <main>
         <div id="view-login" class="view active">
             <div class="login-screen">
-                <h2>BEM-VINDO</h2>
-                <p style="color: var(--muted)">Entre com seu nome para continuar</p>
-                <input type="text" id="login-name" placeholder="Nome de usuário">
-                <button class="btn" style="width: 100%" onclick="login()">ACESSAR</button>
+                <h2>IDENTIFICAÇÃO</h2>
+                <p style="color: var(--muted)">Digite seu nome para acessar seus dados</p>
+                <input type="text" id="login-name" placeholder="Seu nome">
+                <button class="btn" style="width: 100%" onclick="login()">ACESSAR SISTEMA</button>
             </div>
         </div>
 
@@ -222,15 +230,15 @@
                 <div class="profile-section">
                     <img id="dash-avatar" class="big-avatar" src="">
                     <h2 id="welcome-name" style="margin: 10px 0;"></h2>
-                    <label style="color: var(--primary); cursor: pointer; font-size: 13px; font-weight: 600;">
-                        ALTERAR MINHA FOTO
+                    <label style="color: var(--primary); cursor: pointer; font-size: 12px; font-weight: 700; text-transform: uppercase;">
+                        Mudar Foto de Perfil
                         <input type="file" hidden accept="image/*" onchange="atualizarFoto(event)">
                     </label>
                 </div>
                 
-                <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;">
-                    <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: var(--muted); margin-bottom: 5px;">Total de Atendimentos Concluídos</p>
-                    <h3 id="user-total-count" style="font-size: 48px; margin: 0; color: var(--primary);">0</h3>
+                <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 15px; border: 1px solid #222;">
+                    <p style="text-transform: uppercase; font-size: 11px; letter-spacing: 1px; color: var(--muted); margin-bottom: 5px;">Meus Atendimentos Concluídos</p>
+                    <h3 id="user-total-count" style="font-size: 54px; margin: 0; color: var(--primary);">0</h3>
                 </div>
             </div>
         </div>
@@ -238,18 +246,18 @@
         <div id="view-app" class="view">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
                 <div>
-                    <button class="btn btn-outline" onclick="irParaDashboard()" style="margin-bottom: 15px;">← VOLTAR AO PAINEL</button>
-                    <h2 id="checklist-titulo" style="margin: 0; font-size: 28px;"></h2>
+                    <button class="btn btn-outline" onclick="irParaDashboard()" style="margin-bottom: 15px;">← VOLTAR AO INÍCIO</button>
+                    <h2 id="checklist-titulo" style="margin: 0; font-size: 26px;"></h2>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-outline" onclick="reiniciarProtocolo()" style="border-color: #444;">REINICIAR</button>
-                    <button class="btn" onclick="finalizarAtendimento()">FINALIZAR</button>
+                    <button class="btn btn-outline" onclick="reiniciarProtocolo()" style="border-color: #444;">LIMPAR CAMPOS</button>
+                    <button class="btn" onclick="finalizarAtendimento()">CONCLUIR PROTOCOLO</button>
                 </div>
             </div>
 
             <div style="background: var(--panel); padding: 20px; border-radius: 12px; border-left: 4px solid var(--primary); margin-bottom: 25px;">
-                <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600;">
-                    <span>PROGRESSO ATUAL</span>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700;">
+                    <span>PROGRESSO</span>
                     <span id="pct-texto" style="color: var(--primary)">0%</span>
                 </div>
                 <progress id="barra-progresso" value="0"></progress>
@@ -265,8 +273,31 @@
     let checklistAtual = "";
 
     const dadosChecklists = {
-        ME: ["Confirmar novo endereço", "Validar SLA de instalação", "Verificar custo de mudança", "Gerar novo contrato", "Encaminhar para CS"],
-        PL: ["Analisar faturas anteriores", "Explicar novo plano", "Colher assinatura", "Atualizar sistema ERP"]
+        ME: [
+            "Informar sobre a taxa do serviço ou isenção (caso esteja disponível), SLA e custo de excedente",
+            "Verificar situação do financeiro",
+            "Verificar documentação e informações",
+            "Colher informações sobre o novo endereço",
+            "Abrir ''Mudança de Endereço'' no ERP",
+            "Em caso de isenção e possuir atualização de plano, abrir ''Atualização de Plano''",
+            "Encaminhar para o FAT",
+            "Gerar contrato (Verificar documentação e informações)",
+            "Abrir ''Renovação contratual'' após a assinatura do contrato",
+            "Encerrar Renovação",
+            "Encaminhar para a CS"
+        ],
+        PL: [
+            "Verificar em sistema a atualização disponível",
+            "Verificar financeiro",
+            "Verificar documentação e informações",
+            "Informar sobre o processo e assinatura do contrato com renovação da fidelidade",
+            "Abrir o protocolo de ''Atualização de Plano''",
+            "Encaminhar para o FAT",
+            "Enviar o vídeo para assinatura do contrato",
+            "Gerar contrato (Verificar documentação e informações)",
+            "Abrir ''Renovação contratual'' após a assinatura do contrato",
+            "Encerrar Renovação"
+        ]
     };
 
     function login() {
@@ -323,11 +354,11 @@
         const container = document.getElementById("lista-itens");
         container.innerHTML = dadosChecklists[tipo].map(item => `
             <div class="card">
-                <label style="display: flex; gap: 12px; align-items: center; cursor: pointer; font-weight: 600;">
+                <label>
                     <input type="checkbox" onchange="atualizarProgresso()">
                     <span>${item}</span>
                 </label>
-                <textarea placeholder="Adicione notas ou observações..."></textarea>
+                <textarea placeholder="Notas ou observações específicas..."></textarea>
             </div>
         `).join('');
 
@@ -344,13 +375,13 @@
     }
 
     function reiniciarProtocolo() {
-        if(confirm("Deseja limpar todas as marcações e notas deste protocolo atual?")) {
+        if(confirm("Deseja limpar todos os campos deste protocolo?")) {
             abrirChecklist(checklistAtual);
         }
     }
 
     function finalizarAtendimento() {
-        if (confirm("Deseja finalizar este atendimento? Isso somará +1 ao seu contador pessoal.")) {
+        if (confirm("Confirmar a finalização deste atendimento? (+1 no seu contador pessoal)")) {
             let data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
             data.atendimentos++;
             localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify(data));
