@@ -21,7 +21,7 @@ background:var(--bg);
 color:white;
 }
 
-.hidden{opacity:0;pointer-events:none}
+.hidden{display:none}
 
 header{
 background:#111;
@@ -156,11 +156,11 @@ margin-bottom:15px;
 </div>
 </header>
 
-<div id="login" class="container">
+<div id="loginScreen" class="container">
 <div class="card">
 <h2>Login</h2>
 <input id="username" placeholder="Digite seu username">
-<button style="width:100%;margin-top:15px" onclick="login()">Entrar</button>
+<button style="width:100%;margin-top:15px" onclick="doLogin()">Entrar</button>
 </div>
 </div>
 
@@ -237,7 +237,7 @@ window.onload=()=>{
  }
 };
 
-function login(){
+function doLogin(){
  user=username.value.trim();
  if(!user)return;
  localStorage.currentUser=user;
@@ -251,7 +251,7 @@ function logout(){
 }
 
 function showDashboard(){
- login.classList.add("hidden");
+ loginScreen.classList.add("hidden");
  dashboard.classList.remove("hidden");
  hello.innerText="Olá, "+user;
  hello2.innerText=user;
