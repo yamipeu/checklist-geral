@@ -74,7 +74,7 @@
             width: 100%;
             background: transparent;
             border: none;
-            border-bottom: 1px solid var(--divider); /* Linha de divisão */
+            border-bottom: 1px solid var(--divider);
             padding: 16px 20px;
             color: var(--text);
             cursor: pointer;
@@ -84,19 +84,13 @@
             font-size: 14px;
             font-weight: 500;
             text-align: left;
-            transition: all 0.2s;
         }
 
-        .nav-item:last-child {
-            border-bottom: none; /* Remove a linha do último item */
-        }
-
-        .nav-item span { font-size: 18px; }
+        .nav-item:last-child { border-bottom: none; }
 
         .nav-item:hover {
             background: var(--bg);
             color: var(--primary);
-            padding-left: 25px;
         }
 
         .nav-item.active {
@@ -108,7 +102,7 @@
 
         main { flex: 1; padding: 40px; max-width: 1000px; margin: 0 auto; }
 
-        /* RESTANTE DO ESTILO (Cards, Progress, etc) */
+        /* CARDS E VISTA COMPACTA */
         .card {
             background: var(--panel);
             border-radius: 16px;
@@ -118,10 +112,14 @@
         }
 
         .card.checked { opacity: 0.6; background: var(--bg); border-color: var(--primary); }
-        
+
+        .compact-mode .card { padding: 10px 20px; margin-bottom: 6px; }
+        .compact-mode .card textarea { display: none; }
+
         textarea {
             width: 100%; background: var(--bg); border: 1px solid var(--border);
             border-radius: 8px; color: var(--text); padding: 10px; margin-top: 10px; resize: none;
+            font-family: inherit;
         }
 
         progress { width: 100%; height: 8px; border-radius: 10px; margin-top: 10px; }
@@ -152,14 +150,14 @@
 <header>
     <div style="display: flex; align-items: center; gap: 12px;">
         <img src="icon.png" alt="Logo" style="height: 32px; width: 32px;">
-        <div style="font-weight: 700; color: var(--primary); font-size: 18px;">Checklist de Protocolos</div>
+        <div style="font-weight: 700; color: var(--primary); font-size: 18px; letter-spacing: -0.5px;">Checklist de Protocolos</div>
     </div>
     
     <div id="user-header" style="display: none; align-items: center; gap: 15px;">
         <button class="theme-toggle" onclick="toggleTema()">🌓</button>
         <div style="text-align: right;">
             <div id="header-username" style="font-size: 11px; font-weight: 700;"></div>
-            <div style="font-size: 9px; color: var(--muted);">ONLINE</div>
+            <div style="font-size: 9px; color: var(--muted);">OPERADOR</div>
         </div>
         <img id="header-avatar" style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover;">
         <button class="btn-outline" onclick="location.reload()">SAIR</button>
@@ -185,7 +183,7 @@
         <div id="view-login" class="view active">
             <div style="max-width: 380px; margin: 80px auto; background: var(--panel); padding: 40px; border-radius: 24px; text-align: center; border: 1px solid var(--border);">
                 <img src="icon.png" style="width: 50px; margin-bottom: 15px;">
-                <h2>Checklist de Protocolos</h2>
+                <h2>Acesso</h2>
                 <input type="text" id="login-name" placeholder="Seu nome" style="width: 100%; padding: 14px; margin: 20px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
                 <button class="btn" style="width: 100%; padding: 15px;" onclick="login()">ENTRAR</button>
             </div>
@@ -194,16 +192,16 @@
         <div id="view-dash" class="view">
             <div style="background: var(--panel); padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center;">
                 <img id="dash-avatar" style="width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px; object-fit: cover;">
-                <h2 id="welcome-name" style="margin: 0;"></h2>
+                <h2 id="welcome-name" style="margin: 0; font-size: 28px;"></h2>
                 <label style="color: var(--primary); font-size: 11px; cursor: pointer; font-weight: 700;">ALTERAR FOTO <input type="file" hidden onchange="atualizarFoto(event)"></label>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 35px;">
                     <div style="background: var(--bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border);">
-                        <p style="font-size: 10px; color: var(--muted); margin: 0;">HOJE</p>
+                        <p style="font-size: 10px; color: var(--muted); margin: 0;">FEITOS HOJE</p>
                         <h3 id="count-hoje" style="font-size: 36px; margin: 5px 0;">0</h3>
                     </div>
                     <div style="background: var(--bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border);">
-                        <p style="font-size: 10px; color: var(--muted); margin: 0;">TOTAL</p>
+                        <p style="font-size: 10px; color: var(--muted); margin: 0;">TOTAL ACUMULADO</p>
                         <h3 id="count-total" style="font-size: 36px; margin: 5px 0; color: var(--primary);">0</h3>
                     </div>
                 </div>
@@ -211,16 +209,17 @@
         </div>
 
         <div id="view-app" class="view">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
                 <h2 id="checklist-titulo" style="margin: 0;"></h2>
                 <div style="display: flex; gap: 8px;">
+                    <button class="btn-outline" onclick="toggleCompacto()">VISTA COMPACTA</button>
                     <button class="btn-outline" onclick="copiarResumo()">COPIAR</button>
                     <button class="btn" onclick="finalizarAtendimento()">FINALIZAR</button>
                 </div>
             </div>
             <div style="background: var(--panel); padding: 18px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 25px;">
                 <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700;">
-                    <span style="color: var(--muted);">PROGRESSO</span>
+                    <span style="color: var(--muted);">PROGRESSO DO PROTOCOLO</span>
                     <span id="pct-texto" style="color: var(--primary)">0%</span>
                 </div>
                 <progress id="barra-progresso" value="0"></progress>
@@ -245,6 +244,8 @@
     }
 
     if(localStorage.getItem('tema') === 'dark') document.body.classList.remove('light-mode');
+
+    function toggleCompacto() { document.body.classList.toggle('compact-mode'); }
 
     function login() {
         const nome = document.getElementById("login-name").value.trim();
@@ -289,9 +290,9 @@
             <div class="card" id="card-${idx}">
                 <label style="display: flex; gap: 15px; align-items: center; cursor: pointer;">
                     <input type="checkbox" onchange="marcarCard(this, ${idx})" style="width:18px; height:18px; accent-color:var(--primary)">
-                    <span style="font-weight: 500;">${item}</span>
+                    <span style="font-weight: 500; font-size: 14px;">${item}</span>
                 </label>
-                <textarea placeholder="Observações..." oninput="salvarTemp()"></textarea>
+                <textarea placeholder="Notas sobre este item..." oninput="salvarTemp()"></textarea>
             </div>
         `).join('');
         document.getElementById("barra-progresso").max = dados[tipo].length;
@@ -358,7 +359,7 @@
             }
         });
         navigator.clipboard.writeText(r);
-        alert("Copiado!");
+        alert("Copiado com sucesso!");
     }
 </script>
 </body>
