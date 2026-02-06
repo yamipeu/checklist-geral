@@ -9,42 +9,47 @@
 <style>
 :root{
 --red:#e02020;
---dark:#0f0f0f;
---card:#1b1b1b;
+--bg:#0b0b0b;
+--card:#161616;
 --text:#eee;
 }
+
+*{box-sizing:border-box}
 
 body{
 margin:0;
 font-family:Segoe UI,Arial;
-background:linear-gradient(180deg,#0c0c0c,#1a1a1a);
+background:linear-gradient(180deg,#000,#151515);
 color:var(--text);
 }
 
 .hidden{display:none}
 
 header{
-background:linear-gradient(90deg,#b31212,#e02020);
+background:#111;
 padding:15px 30px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+border-bottom:1px solid #222;
 }
 
 button{
 border:none;
-border-radius:6px;
-padding:10px 16px;
+border-radius:8px;
+padding:10px 18px;
 background:var(--red);
 color:white;
 cursor:pointer;
 }
 
+.center{max-width:1100px;margin:50px auto;padding:20px}
+
 .card{
 background:var(--card);
-border-radius:14px;
+border-radius:16px;
 padding:25px;
-box-shadow:0 10px 30px rgba(0,0,0,.5);
+box-shadow:0 15px 40px rgba(0,0,0,.6);
 animation:fade .4s ease;
 }
 
@@ -53,56 +58,20 @@ from{opacity:0;transform:translateY(10px)}
 to{opacity:1}
 }
 
-.center{
-max-width:900px;
-margin:40px auto;
-}
-
 input,textarea{
 width:100%;
-margin-top:6px;
-padding:8px;
-border-radius:6px;
+margin-top:8px;
+padding:10px;
+border-radius:8px;
 border:none;
-}
-
-.top-actions{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-}
-
-.progress{
-height:10px;
-background:#333;
-border-radius:10px;
-overflow:hidden;
-}
-
-.progress div{
-height:100%;
-background:var(--red);
-width:0%;
-transition:.4s;
-}
-
-.stage{margin-top:15px;border-top:1px solid #333;padding-top:10px}
-
-.card-btn{
-margin-top:15px;
-width:100%;
-}
-
-.dashboard-cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
+background:#222;
+color:white;
 }
 
 .profile{
 display:flex;
 align-items:center;
-gap:15px;
+gap:12px;
 }
 
 .avatar{
@@ -111,42 +80,66 @@ height:50px;
 border-radius:50%;
 object-fit:cover;
 cursor:pointer;
-border:2px solid white;
+border:2px solid var(--red);
 }
+
+.dashboard{
+display:grid;
+grid-template-columns:1fr 2fr;
+gap:30px;
+}
+
+.bigAvatar{
+width:120px;height:120px;border-radius:50%;border:3px solid var(--red)
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+}
+
+.tile{
+background:#1b1b1b;
+padding:25px;
+border-radius:14px;
+cursor:pointer;
+transition:.3s;
+}
+
+.tile:hover{transform:translateY(-6px)}
+
+.progress{height:10px;background:#333;border-radius:10px;overflow:hidden;margin:10px 0}
+.progress div{height:100%;background:var(--red);width:0%;transition:.4s}
+
+.stage{margin-top:15px;border-top:1px solid #333;padding-top:10px}
+
+.top{display:flex;gap:10px;margin-bottom:15px}
 
 .modal{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,.8);
+background:rgba(0,0,0,.85);
 display:flex;
 align-items:center;
 justify-content:center;
 z-index:10;
 pointer-events:none;
+opacity:0;
+transition:.3s;
 }
 
-.modal:not(.hidden){
+.modal.active{
 pointer-events:auto;
+opacity:1;
 }
 
-.modal img{
-max-width:80%;
-border-radius:10px;
-}
-
-.small{opacity:.6;font-size:13px}
+.modal img{max-width:80%;border-radius:12px}
 
 .save{
-position:fixed;
-bottom:10px;
-right:10px;
-background:#222;
-padding:6px 12px;
-border-radius:20px;
-font-size:12px;
+position:fixed;bottom:15px;right:15px;
+background:#222;padding:6px 14px;border-radius:20px;font-size:12px
 }
-
-.dark header{background:#111}
 </style>
 </head>
 
@@ -164,116 +157,114 @@ font-size:12px;
 <div id="login" class="center card">
 <h2>Login</h2>
 <input id="username" placeholder="Digite seu username">
-<button class="card-btn" onclick="login()">Entrar</button>
+<button onclick="login()" style="margin-top:15px;width:100%">Entrar</button>
 </div>
 
 <div id="dashboard" class="center hidden">
+<div class="dashboard">
+
 <div class="card">
-<h2>Dashboard</h2>
+<img id="bigAvatar" class="bigAvatar"><br><br>
+<b id="userName"></b>
 <p id="stats"></p>
-
-<input type="file" onchange="uploadAvatar(this)">
-<br><br>
-
-<div class="dashboard-cards">
-<button onclick="openChecklist('me')" class="card">Mudança de Endereço</button>
-<button onclick="openChecklist('plano')" class="card">Atualização de Plano</button>
+<input type="file" onchange="upload(this)">
 </div>
+
+<div class="card">
+<h2>Escolha o checklist</h2>
+<div class="cards">
+<div class="tile" onclick="openChecklist('me')">Mudança de Endereço</div>
+<div class="tile" onclick="openChecklist('plano')">Atualização de Plano</div>
+</div>
+</div>
+
 </div>
 </div>
 
 <div id="checklist" class="center hidden">
-<div class="top-actions">
+<div class="top">
 <button onclick="back()">⬅ Dashboard</button>
-<button onclick="resetChecklist()">🔄 Reiniciar</button>
+<button onclick="reset()">🔄 Reiniciar</button>
 <button onclick="exportar()">📄 Exportar</button>
 </div>
 
 <div class="card">
 <h2 id="title"></h2>
-<div>Tempo: <span id="timer">00:00</span></div>
-
+Tempo: <span id="timer">00:00</span>
 <div class="progress"><div id="bar"></div></div>
-
 <div id="steps"></div>
-
-<button class="card-btn" onclick="finish()">Finalizar</button>
+<button style="width:100%;margin-top:20px" onclick="finish()">Finalizar</button>
 </div>
 </div>
 
 <div id="done" class="center hidden">
 <div class="card">
-<h2>🎉 Atendimento concluído!</h2>
-<button onclick="back()">Novo protocolo</button>
+<h2>🎉 Atendimento concluído</h2>
+<button onclick="back()">Novo</button>
 </div>
 </div>
 
-<div id="photoModal" class="modal hidden" onclick="this.classList.add('hidden')">
+<div id="photoModal" class="modal" onclick="closeModal()">
 <img id="modalImg">
 </div>
 
 <div id="saved" class="save hidden">Salvo automaticamente</div>
 
 <script>
-let user="",data={},current="",start;
+let user,data={},start,current;
 
-const templates={
-me:[
-"Informar custo/SLA","Filtrar endereço","Verificar documentos","Verificar ME","Abrir ME","Atualização plano","Gerar contrato","Abrir renovação","Encaminhar CS"
-],
-plano:[
-"Informar processo","Verificar docs","Abrir ERP","Conferir","Enviar vídeo","Gerar contrato","Abrir renovação","Encerrar"
-]
+const lists={
+me:["Informar SLA","Filtrar endereço","Verificar docs","Verificar ME","Abrir ME","Atualizar plano","Gerar contrato","Abrir renovação","Encaminhar CS"],
+plano:["Informar processo","Verificar docs","Abrir ERP","Conferir","Enviar vídeo","Gerar contrato","Abrir renovação","Encerrar"]
 };
 
 function login(){
 user=username.value.trim();
 if(!user)return;
 data=JSON.parse(localStorage[user]||'{"count":0,"avatar":""}');
-document.getElementById("login").classList.add("hidden");
+login.classList.add("hidden");
 dashboard.classList.remove("hidden");
 userBar.classList.remove("hidden");
 hello.innerText="Olá, "+user;
-if(data.avatar){avatar.src=data.avatar}
-updateStats();
+userName.innerText=user;
+stats.innerText="Atendimentos: "+data.count;
+if(data.avatar){avatar.src=bigAvatar.src=data.avatar}
 }
 
 function logout(){location.reload()}
 
-function uploadAvatar(i){
-const r=new FileReader();
+function upload(i){
+let r=new FileReader();
 r.onload=e=>{
 data.avatar=e.target.result;
-avatar.src=data.avatar;
+avatar.src=bigAvatar.src=data.avatar;
 save();
 }
 r.readAsDataURL(i.files[0]);
 }
 
-avatar.onclick=()=>{
-modalImg.src=avatar.src;
-photoModal.classList.remove("hidden");
+avatar.onclick=()=>openModal();
+bigAvatar.onclick=()=>openModal();
+
+function openModal(){
+modalImg.src=data.avatar;
+photoModal.classList.add("active");
 }
 
-function updateStats(){
-stats.innerText="Atendimentos: "+(data.count||0);
+function closeModal(){
+photoModal.classList.remove("active");
 }
 
 function openChecklist(t){
 current=t;
-title.innerText=t=="me"?"Mudança de Endereço":"Atualização de Plano";
 dashboard.classList.add("hidden");
 checklist.classList.remove("hidden");
+title.innerText=t=="me"?"Mudança de Endereço":"Atualização de Plano";
 steps.innerHTML="";
-templates[t].forEach((s,i)=>{
-steps.innerHTML+=`
-<div class="stage">
-<label><input type="checkbox" onchange="calc()"> ${s}</label>
-<textarea placeholder="Observações..."></textarea>
-</div>`;
+lists[t].forEach(s=>{
+steps.innerHTML+=`<div class="stage"><label><input type="checkbox" onchange="calc()"> ${s}</label><textarea></textarea></div>`;
 });
-start=Date.now();
-tick();
+start=Date.now();tick();
 }
 
 function tick(){
@@ -286,27 +277,16 @@ setTimeout(tick,1000);
 
 function calc(){
 let c=[...document.querySelectorAll("input[type=checkbox]")];
-let done=c.filter(x=>x.checked).length;
-bar.style.width=(done/c.length*100)+"%";
-showSave();
-}
-
-function showSave(){
+bar.style.width=(c.filter(x=>x.checked).length/c.length*100)+"%";
 saved.classList.remove("hidden");
 setTimeout(()=>saved.classList.add("hidden"),1000);
-save();
-}
-
-function save(){
-localStorage[user]=JSON.stringify(data);
 }
 
 function finish(){
-data.count=(data.count||0)+1;
-save();
+data.count++;save();
 checklist.classList.add("hidden");
 done.classList.remove("hidden");
-updateStats();
+stats.innerText="Atendimentos: "+data.count;
 }
 
 function back(){
@@ -315,21 +295,22 @@ checklist.classList.add("hidden");
 dashboard.classList.remove("hidden");
 }
 
-function resetChecklist(){
-[...document.querySelectorAll("input")].forEach(x=>x.checked=false);
+function reset(){
+document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);
 bar.style.width="0%";
 }
 
 function exportar(){
-let txt=[...document.querySelectorAll(".stage")].map(s=>{
-return s.innerText;
-}).join("\n");
+let t=[...document.querySelectorAll(".stage")].map(x=>x.innerText).join("\n");
 let a=document.createElement("a");
-a.href="data:text/plain,"+encodeURIComponent(txt);
-a.download="checklist.txt";
-a.click();
+a.href="data:text/plain,"+encodeURIComponent(t);
+a.download="checklist.txt";a.click();
 }
+
+function save(){localStorage[user]=JSON.stringify(data)}
+
+document.addEventListener("keydown",e=>{if(e.key=="Escape")closeModal()});
 </script>
+
 </body>
 </html>
-
