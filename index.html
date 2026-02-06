@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Checklists de Protocolos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" href="icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--primary:#dc2626;
+--bg:#f1f5f9;
+--card:#ffffff;
+--text:#0f172a;
+--sub:#64748b;
+}
+
+.dark{
+--bg:#020617;
+--card:#0f172a;
+--text:#f8fafc;
+--sub:#94a3b8;
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Inter,Arial;
+background:var(--bg);
+color:var(--text);
+transition:.3s;
+}
+
+/* HEADER */
+header{
+background:linear-gradient(135deg,#7f1d1d,#dc2626);
+color:white;
+padding:14px 20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{display:flex;align-items:center;gap:10px;font-weight:600}
+.logo img{height:34px;background:white;border-radius:8px;padding:4px}
+
+/* TELAS */
+.view{
+opacity:0;
+transform:translateY(20px);
+pointer-events:none;
+transition:.4s ease;
+}
+
+.view.active{
+opacity:1;
+transform:none;
+pointer-events:auto;
+}
+
+/* CONTAINER */
+main{
+max-width:900px;
+margin:30px auto;
+background:var(--card);
+border-radius:14px;
+padding:24px;
+box-shadow:0 12px 30px rgba(0,0,0,.2);
+}
+
+/* LOGIN */
+.login{
+text-align:center;
+}
+
+.login input{
+padding:12px;
+width:100%;
+max-width:300px;
+border-radius:10px;
+border:1px solid #555;
+margin:10px 0;
+background:transparent;
+color:inherit;
+}
+
+/* MENU */
+.menu button{
+width:100%;
+margin:10px 0;
+padding:16px;
+font-size:16px;
+}
+
+/* CARDS */
+.item{
+display:flex;
+gap:14px;
+padding:14px;
+margin-bottom:14px;
+background:rgba(0,0,0,.03);
+border-radius:12px;
+animation:card .4s ease forwards;
+}
+
+.item:hover{transform:scale(1.01)}
+
+@keyframes card{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1}
+}
+
+.dark .item{background:#020617}
+
+/* FORM */
+textarea{
+width:100%;
+border-radius:8px;
+border:1px solid #555;
+padding:8px;
+margin-top:6px;
+background:transparent;
+color:inherit;
+}
+
+input[type=checkbox]{
+width:22px;
+height:22px;
+accent-color:var(--primary);
+}
+
+/* PROGRESS */
+progress{
+width:100%;
+height:20px;
+accent-color:var(--primary);
+transition:.4s ease;
+}
+
+#pct{font-weight:600;margin-bottom:10px}
+
+/* BUTTON */
+button{
+background:var(--primary);
+color:white;
+border:none;
+border-radius:10px;
+padding:12px 16px;
+cursor:pointer;
+}
+
+button:hover{opacity:.85}
+
+.top-btn{background:#00000040}
+
+/* FOOTER */
+footer{text-align:center;color:var(--sub);margin-top:20px}
+
+@media(max-width:600px){
+main{margin:10px}
+.item{flex-direction:column}
+}
+
+@media print{
+header,.top-btn,button,.menu{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">
+<img src="icon.png">
+<span>Checklists de Protocolos</span>
+</div>
+
+<div>
+<span id="user"></span>
+<button class="top-btn" onclick="toggleTema()">🌙</button>
+</div>
+</header>
+
+<main>
+
+<!-- LOGIN -->
+<div id="login" class="view active login">
+<h2>Entrar</h2>
+<input id="username" placeholder="Digite seu nome">
+<br>
+<button onclick="entrar()">Acessar</button>
+</div>
+
+<!-- MENU -->
+<div id="menu" class="view menu">
+<h3>Bem-vindo, <span id="nome"></span></h3>
+<p>Atendimentos realizados: <strong id="count">0</strong></p>
+<button onclick="abrir('ME')">Mudança de Endereço</button>
+<button onclick="abrir('PL')">Atualização de Plano</button>
+</div>
+
+<!-- APP -->
+<div id="app" class="view">
+
+<h2 id="titulo"></h2>
+
+<progress id="progress"></progress>
+<div id="pct">0%</div>
+
+<div id="lista"></div>
+
+<br>
+<button onclick="exportar()">Exportar PDF</button>
+<button onclick="resetar()">Resetar</button>
+<button onclick="voltar()">Voltar</button>
+
+<footer>Sistema de checklist</footer>
+</div>
+
+</main>
+
+<script>
+let atual="";
+const dados={
+ME:[
+"Informar sobre custo/isenção, pedir para levar equipamento e informar SLA",
+"Filtrar novo endereço",
+"Verificar documentos",
+"Verificar se pode ser isento",
+"Abrir ME no ERP",
+"Verificar atualização de plano",
+"Gerar contrato",
+"Abrir renovação",
+"Encaminhar CS"
+],
+PL:[
+"Informar processo e benefícios",
+"Verificar documentação e faturas",
+"Abrir atualização no ERP",
+"Conferir informações em sistema",
+"Enviar vídeo ao cliente",
+"Gerar contrato",
+"Abrir renovação após assinatura",
+"Encerrar renovação"
+]
+};
+
+function entrar(){
+const u=username.value.trim();
+if(!u)return alert("Digite seu nome");
+localStorage.setItem("user",u);
+login.classList.remove("active");
+setTimeout(()=>menu.classList.add("active"),200);
+nome.innerText=u;
+user.innerText=u;
+contar();
+}
+
+if(localStorage.getItem("user")){
+login.style.display="none";
+menu.classList.add("active");
+nome.innerText=localStorage.getItem("user");
+user.innerText=localStorage.getItem("user");
+}
+
+function abrir(t){
+atual=t;
+menu.classList.remove("active");
+setTimeout(()=>app.classList.add("active"),200);
+
+let c=parseInt(localStorage.getItem("count")||0)+1;
+localStorage.setItem("count",c);
+contar();
+
+titulo.innerText=t=="ME"?"Mudança de Endereço":"Atualização de Plano";
+lista.innerHTML="";
+progress.max=dados[t].length;
+
+dados[t].forEach(x=>{
+lista.innerHTML+=`
+<div class="item">
+<input type="checkbox">
+<div><strong>${x}</strong><textarea placeholder="Observações..."></textarea></div>
+</div>`;
+});
+
+bind();
+carregar();
+}
+
+function contar(){
+count.innerText=localStorage.getItem("count")||0;
+}
+
+function voltar(){
+app.classList.remove("active");
+setTimeout(()=>menu.classList.add("active"),200);
+}
+
+function bind(){
+document.querySelectorAll("input,textarea").forEach(e=>e.addEventListener("input",salvar));
+}
+
+function salvar(){
+const c=[...document.querySelectorAll("input")].map(x=>x.checked);
+const t=[...document.querySelectorAll("textarea")].map(x=>x.value);
+localStorage.setItem("check_"+atual,JSON.stringify({c,t}));
+atualizar();
+}
+
+function carregar(){
+let d=JSON.parse(localStorage.getItem("check_"+atual));
+if(!d)return;
+document.querySelectorAll("input").forEach((x,i)=>x.checked=d.c[i]);
+document.querySelectorAll("textarea").forEach((x,i)=>x.value=d.t[i]);
+atualizar();
+}
+
+function atualizar(){
+let total=document.querySelectorAll("input").length;
+let ok=[...document.querySelectorAll("input")].filter(x=>x.checked).length;
+progress.value=ok;
+pct.innerText=Math.round(ok/total*100)+"%";
+}
+
+function resetar(){
+localStorage.removeItem("check_"+atual);
+document.querySelectorAll("input").forEach(x=>x.checked=false);
+document.querySelectorAll("textarea").forEach(x=>x.value="");
+atualizar();
+}
+
+function exportar(){window.print();}
+
+function toggleTema(){
+document.body.classList.toggle("dark");
+localStorage.setItem("tema",document.body.classList.contains("dark"));
+}
+
+if(localStorage.getItem("tema")=="true")document.body.classList.add("dark");
+</script>
+
+</body>
+</html>
