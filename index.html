@@ -2,25 +2,23 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Checklist de Protocolos</title>
+    <title>Checklist de Protocolos Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Paleta Comfort - Suavizada para evitar fadiga visual */
             --primary: #e11d2e;
             --primary-soft: #ff4d5a;
-            --bg: #0f1113;      /* Azul-grafite profundo (mais suave que preto puro) */
-            --panel: #1a1d21;   /* Painéis levemente mais claros */
-            --text: #e0e0e0;    /* Branco off-white para reduzir o brilho */
+            --bg: #0f1113;
+            --panel: #1a1d21;
+            --text: #e0e0e0;
             --muted: #888e96;
             --border: #2d3136;
             --radius: 14px;
         }
 
-        * { box-sizing: border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
         body {
             margin: 0;
@@ -29,7 +27,6 @@
             color: var(--text);
             background-image: radial-gradient(circle at top right, #1d1011, transparent 600px);
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
         }
 
         header {
@@ -41,25 +38,11 @@
             justify-content: space-between;
             padding: 0 30px;
             border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            position: sticky; top: 0; z-index: 1000;
         }
 
-        .user-header-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 10px rgba(225, 29, 46, 0.2);
-        }
+        .user-header-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
 
         .layout { display: flex; min-height: calc(100vh - 75px); }
 
@@ -81,83 +64,31 @@
             text-align: left;
             cursor: pointer;
             font-weight: 500;
-            font-size: 14px;
         }
 
         aside button:hover, aside button.active {
             color: #fff;
             background: rgba(225, 29, 46, 0.08);
             border-color: rgba(225, 29, 46, 0.3);
-            padding-left: 22px; /* Pequeno deslize lateral no hover */
         }
 
         main { flex: 1; padding: 40px; max-width: 1100px; margin: 0 auto; }
 
-        /* DASHBOARD */
-        .dash-card {
-            background: var(--panel);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .big-avatar {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--primary);
-            margin-bottom: 20px;
-            box-shadow: 0 0 30px rgba(225, 29, 46, 0.15);
-        }
-
-        /* CHECKLIST CARDS */
+        /* CARDS & CHECKLIST */
         .card {
             background: var(--panel);
             border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 18px;
+            padding: 20px;
+            margin-bottom: 15px;
             border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
         }
 
-        .card:hover {
-            border-color: #444;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-        }
+        .card.checked { opacity: 0.6; border-color: rgba(225, 29, 46, 0.2); }
+        .card.checked span { text-decoration: line-through; color: var(--muted); }
 
-        /* Estilo para item concluído */
-        .card.checked {
-            opacity: 0.6;
-            border-color: rgba(225, 29, 46, 0.2);
-        }
-
-        .card.checked span {
-            text-decoration: line-through;
-            color: var(--muted);
-        }
-
-        .card label {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 15px;
-            line-height: 1.4;
-        }
-
-        input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
-            accent-color: var(--primary);
-            cursor: pointer;
-            flex-shrink: 0;
-        }
+        /* MODO COMPACTO */
+        .compact-mode .card { padding: 10px 20px; margin-bottom: 8px; }
+        .compact-mode textarea { display: none; }
 
         textarea {
             width: 100%;
@@ -165,159 +96,125 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             color: #ccc;
-            padding: 14px;
-            margin-top: 15px;
+            padding: 12px;
+            margin-top: 10px;
             resize: none;
-            font-family: inherit;
-            font-size: 14px;
         }
 
-        textarea:focus {
-            border-color: var(--primary-soft);
-            outline: none;
-            background: rgba(0,0,0,0.4);
-        }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
 
-        /* BARRA DE PROGRESSO MOTIVACIONAL */
-        .progress-box {
-            background: var(--panel);
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            margin-bottom: 35px;
-        }
+        progress { width: 100%; height: 10px; border-radius: 10px; margin-top: 10px; }
+        progress::-webkit-progress-value { background: var(--primary); border-radius: 10px; }
 
-        progress {
-            width: 100%;
-            height: 12px;
-            border-radius: 10px;
-            margin-top: 12px;
-        }
-
-        progress::-webkit-progress-bar { background: #222; border-radius: 10px; }
-        progress::-webkit-progress-value { 
-            background: linear-gradient(90deg, var(--primary), var(--primary-soft)); 
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(225, 29, 46, 0.3);
-        }
-
-        /* BOTÕES */
+        /* BUTTONS */
         .btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 14px 28px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        .btn:hover { background: var(--primary-soft); transform: scale(1.03); }
-        
-        .btn-outline { 
-            background: transparent; 
-            border: 1px solid var(--border); 
-            color: var(--muted); 
-            text-transform: uppercase;
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
             font-size: 10px;
             font-weight: 700;
         }
-        
-        .btn-outline:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: #555; }
+
+        .btn-outline:hover { background: #222; color: #fff; }
 
         .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        /* LOGIN */
         .login-screen {
             max-width: 400px;
             margin: 100px auto;
             background: var(--panel);
-            padding: 45px;
+            padding: 40px;
             border-radius: 24px;
             text-align: center;
             border: 1px solid var(--border);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 16px;
-            margin: 25px 0;
-            border-radius: 12px;
-            border: 1px solid var(--border);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
             background: #000;
-            color: white;
-            font-size: 16px;
+            border: 1px solid var(--border);
+            color: #fff;
             text-align: center;
         }
     </style>
 </head>
-<body>
+<body class="">
 
 <header>
-    <div style="font-weight: 800; letter-spacing: 2px; color: var(--primary); font-size: 14px;">CHECKLIST DE PROTOCOLOS</div>
+    <div style="font-weight: 800; color: var(--primary);">CHECKLIST PRO</div>
     <div class="user-header-info" id="user-header" style="display: none;">
-        <span id="header-username" style="font-weight: 500; font-size: 13px; color: var(--muted);"></span>
+        <span id="header-username" style="font-size: 12px; color: var(--muted);"></span>
         <img id="header-avatar" class="avatar" src="">
-        <button class="btn-outline" onclick="logout()" style="padding: 6px 12px; margin-left: 10px; border-radius: 6px;">SAIR</button>
+        <button class="btn-outline" onclick="logout()">SAIR</button>
     </div>
 </header>
 
 <div class="layout">
     <aside id="sidebar" style="display: none;">
-        <button id="nav-dash" onclick="irParaDashboard()">🏠 Início / Dashboard</button>
-        <button id="nav-ME" onclick="abrirChecklist('ME')">📍 Mudança de Endereço</button>
-        <button id="nav-PL" onclick="abrirChecklist('PL')">📊 Atualização de Plano</button>
+        <button id="nav-dash" onclick="irParaDashboard()">🏠 Dashboard</button>
+        <button id="nav-ME" onclick="abrirChecklist('ME')">📍 Mudança Endereço</button>
+        <button id="nav-PL" onclick="abrirChecklist('PL')">📊 Atualização Plano</button>
     </aside>
 
     <main>
         <div id="view-login" class="view active">
             <div class="login-screen">
-                <h2 style="margin-bottom: 10px;">BEM-VINDO</h2>
-                <p style="color: var(--muted); font-size: 14px;">Identifique-se para gerir os seus protocolos</p>
-                <input type="text" id="login-name" placeholder="Seu nome de utilizador">
-                <button class="btn" style="width: 100%; padding: 18px;" onclick="login()">ACESSAR SISTEMA</button>
+                <h2>BEM-VINDO</h2>
+                <input type="text" id="login-name" placeholder="Digite seu nome">
+                <button class="btn" style="width: 100%" onclick="login()">ACESSAR</button>
             </div>
         </div>
 
         <div id="view-dash" class="view">
-            <div class="dash-card">
-                <div class="profile-section">
-                    <img id="dash-avatar" class="big-avatar" src="">
-                    <h2 id="welcome-name" style="margin: 0 0 10px 0; font-size: 28px;"></h2>
-                    <label style="color: var(--primary); cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 1px;">
-                        [ ALTERAR FOTO DE PERFIL ]
-                        <input type="file" hidden accept="image/*" onchange="atualizarFoto(event)">
-                    </label>
-                </div>
-                
-                <div style="background: rgba(0,0,0,0.2); padding: 30px; border-radius: 20px; border: 1px solid var(--border); display: inline-block; min-width: 250px;">
-                    <p style="text-transform: uppercase; font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px;">Atendimentos Concluídos</p>
-                    <h3 id="user-total-count" style="font-size: 64px; margin: 0; color: var(--primary); font-weight: 800;">0</h3>
+            <div style="text-align: center; background: var(--panel); padding: 40px; border-radius: 20px; border: 1px solid var(--border);">
+                <img id="dash-avatar" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px; object-fit: cover;">
+                <h2 id="welcome-name" style="margin: 0;"></h2>
+                <label style="color: var(--primary); font-size: 12px; cursor: pointer; font-weight: 700;">
+                    ALTERAR FOTO <input type="file" hidden accept="image/*" onchange="atualizarFoto(event)">
+                </label>
+                <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
+                    <p style="font-size: 11px; color: var(--muted); margin-bottom: 5px;">TOTAL DE ATENDIMENTOS</p>
+                    <h3 id="user-total-count" style="font-size: 50px; margin: 0; color: var(--primary);">0</h3>
                 </div>
             </div>
         </div>
 
         <div id="view-app" class="view">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                 <div>
-                    <button class="btn-outline" onclick="irParaDashboard()" style="margin-bottom: 15px; padding: 10px 15px;">← VOLTAR AO INÍCIO</button>
-                    <h2 id="checklist-titulo" style="margin: 0; font-size: 32px; font-weight: 700;"></h2>
+                    <button class="btn-outline" onclick="irParaDashboard()">← VOLTAR</button>
+                    <h2 id="checklist-titulo" style="margin: 10px 0 0 0;"></h2>
                 </div>
-                <div style="display: flex; gap: 12px;">
-                    <button class="btn-outline" onclick="reiniciarProtocolo()">REINICIAR</button>
-                    <button class="btn" onclick="finalizarAtendimento()">FINALIZAR AGORA</button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-outline" onclick="toggleCompacto()">VISTA COMPACTA</button>
+                    <button class="btn-outline" onclick="copiarResumo()">COPIAR RESUMO</button>
+                    <button class="btn" onclick="finalizarAtendimento()">FINALIZAR</button>
                 </div>
             </div>
 
-            <div class="progress-box">
-                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--muted);">
-                    <span>CONCLUSÃO DO PROTOCOLO</span>
+            <div style="background: var(--panel); padding: 20px; border-radius: 12px; border-left: 4px solid var(--primary); margin-bottom: 25px;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700;">
+                    <span>PROGRESSO</span>
                     <span id="pct-texto" style="color: var(--primary-soft)">0%</span>
                 </div>
                 <progress id="barra-progresso" value="0"></progress>
@@ -333,76 +230,32 @@
     let checklistAtual = "";
 
     const dadosChecklists = {
-        ME: [
-            "Informar sobre a taxa do serviço ou isenção (caso esteja disponível), SLA e custo de excedente",
-            "Verificar situação do financeiro",
-            "Verificar documentação e informações",
-            "Colher informações sobre o novo endereço",
-            "Abrir ''Mudança de Endereço'' no ERP",
-            "Em caso de isenção e possuir atualização de plano, abrir ''Atualização de Plano''",
-            "Encaminhar para o FAT",
-            "Gerar contrato (Verificar documentação e informações)",
-            "Abrir ''Renovação contratual'' após a assinatura do contrato",
-            "Encerrar Renovação",
-            "Encaminhar para a CS"
-        ],
-        PL: [
-            "Verificar em sistema a atualização disponível",
-            "Verificar financeiro",
-            "Verificar documentação e informações",
-            "Informar sobre o processo e assinatura do contrato com renovação da fidelidade",
-            "Abrir o protocolo de ''Atualização de Plano''",
-            "Encaminhar para o FAT",
-            "Enviar o vídeo para assinatura do contrato",
-            "Gerar contrato (Verificar documentação e informações)",
-            "Abrir ''Renovação contratual'' após a assinatura do contrato",
-            "Encerrar Renovação"
-        ]
+        ME: ["Informar taxa/isenção, SLA e excedente", "Verificar financeiro", "Verificar documentação", "Informações novo endereço", "Abrir ME no ERP", "Abrir Atualização se isento", "Encaminhar FAT", "Gerar contrato", "Abrir Renovação após assinatura", "Encerrar Renovação", "Encaminhar CS"],
+        PL: ["Verificar atualização disponível", "Verificar financeiro", "Verificar documentação", "Informar processo/fidelidade", "Abrir protocolo de Atualização", "Encaminhar FAT", "Enviar vídeo assinatura", "Gerar contrato", "Abrir Renovação após assinatura", "Encerrar Renovação"]
     };
 
     function login() {
         const nome = document.getElementById("login-name").value.trim().toLowerCase();
-        if (!nome) return alert("Por favor, introduza o seu nome.");
+        if (!nome) return;
         usuarioLogado = nome;
-        
         if (!localStorage.getItem("user_data_" + usuarioLogado)) {
-            const novoUsuario = {
-                nome: nome,
-                atendimentos: 0,
-                foto: "https://ui-avatars.com/api/?name=" + nome + "&background=e11d2e&color=fff"
-            };
-            localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify(novoUsuario));
+            localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify({ nome: nome, atendimentos: 0, foto: "https://ui-avatars.com/api/?name="+nome+"&background=e11d2e&color=fff" }));
         }
         irParaDashboard();
     }
 
     function irParaDashboard() {
         const data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
-        
         document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
         document.getElementById("view-dash").classList.add("active");
         document.getElementById("sidebar").style.display = "block";
         document.getElementById("user-header").style.display = "flex";
         document.getElementById("view-login").classList.remove("active");
-
         document.getElementById("header-username").innerText = data.nome.toUpperCase();
         document.getElementById("header-avatar").src = data.foto;
         document.getElementById("dash-avatar").src = data.foto;
         document.getElementById("welcome-name").innerText = "Olá, " + data.nome;
         document.getElementById("user-total-count").innerText = data.atendimentos;
-    }
-
-    function atualizarFoto(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function() {
-            let data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
-            data.foto = reader.result;
-            localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify(data));
-            irParaDashboard();
-        }
-        reader.readAsDataURL(file);
     }
 
     function abrirChecklist(tipo) {
@@ -412,53 +265,84 @@
         document.getElementById("checklist-titulo").innerText = tipo === 'ME' ? "Mudança de Endereço" : "Atualização de Plano";
 
         const container = document.getElementById("lista-itens");
-        container.innerHTML = dadosChecklists[tipo].map(item => `
-            <div class="card">
-                <label>
-                    <input type="checkbox" onchange="marcarCard(this)">
-                    <span>${item}</span>
-                </label>
-                <textarea placeholder="Notas ou detalhes importantes deste passo..."></textarea>
+        container.innerHTML = dadosChecklists[tipo].map((item, idx) => `
+            <div class="card" id="card-${idx}">
+                <label><input type="checkbox" onchange="marcarCard(this, ${idx})"> <span>${item}</span></label>
+                <textarea placeholder="Notas..." oninput="salvarTemp()"></textarea>
             </div>
         `).join('');
 
         document.getElementById("barra-progresso").max = dadosChecklists[tipo].length;
-        atualizarProgresso();
+        carregarTemp();
     }
 
-    function marcarCard(input) {
-        const card = input.closest('.card');
-        if(input.checked) card.classList.add('checked');
-        else card.classList.remove('checked');
+    function marcarCard(input, idx) {
+        const card = document.getElementById(`card-${idx}`);
+        input.checked ? card.classList.add('checked') : card.classList.remove('checked');
+        salvarTemp();
         atualizarProgresso();
     }
 
     function atualizarProgresso() {
-        const checkboxes = document.querySelectorAll("#lista-itens input[type='checkbox']");
-        const marcados = [...checkboxes].filter(c => c.checked).length;
-        const total = checkboxes.length;
+        const checks = document.querySelectorAll("#lista-itens input[type='checkbox']");
+        const marcados = [...checks].filter(c => c.checked).length;
         document.getElementById("barra-progresso").value = marcados;
-        document.getElementById("pct-texto").innerText = Math.round((marcados / total) * 100) + "%";
+        document.getElementById("pct-texto").innerText = Math.round((marcados / checks.length) * 100) + "%";
     }
 
-    function reiniciarProtocolo() {
-        if(confirm("Deseja limpar todos os dados do protocolo atual?")) {
-            abrirChecklist(checklistAtual);
-        }
+    function salvarTemp() {
+        const checks = [...document.querySelectorAll("#lista-itens input")].map(x => x.checked);
+        const notas = [...document.querySelectorAll("#lista-itens textarea")].map(x => x.value);
+        localStorage.setItem(`save_${usuarioLogado}_${checklistAtual}`, JSON.stringify({ checks, notas }));
+    }
+
+    function carregarTemp() {
+        const save = JSON.parse(localStorage.getItem(`save_${usuarioLogado}_${checklistAtual}`));
+        if (!save) return atualizarProgresso();
+        document.querySelectorAll("#lista-itens input").forEach((x, i) => {
+            x.checked = save.checks[i];
+            if(x.checked) x.closest('.card').classList.add('checked');
+        });
+        document.querySelectorAll("#lista-itens textarea").forEach((x, i) => x.value = save.notas[i]);
+        atualizarProgresso();
+    }
+
+    function copiarResumo() {
+        let resumo = `PROTOCOLO: ${checklistAtual}\nOperador: ${usuarioLogado}\n---\n`;
+        document.querySelectorAll("#lista-itens .card").forEach(card => {
+            if (card.querySelector("input").checked) {
+                resumo += `[OK] ${card.querySelector("span").innerText}\n`;
+                const nota = card.querySelector("textarea").value;
+                if (nota) resumo += `   Nota: ${nota}\n`;
+            }
+        });
+        navigator.clipboard.writeText(resumo);
+        alert("Resumo copiado para o ERP!");
     }
 
     function finalizarAtendimento() {
-        if (confirm("Concluir atendimento? (+1 no seu registo)")) {
-            let data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
-            data.atendimentos++;
-            localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify(data));
-            irParaDashboard();
-        }
+        const pendentes = [...document.querySelectorAll("#lista-itens input")].filter(x => !x.checked).length;
+        if (pendentes > 0 && !confirm(`Ainda faltam ${pendentes} itens. Finalizar assim mesmo?`)) return;
+
+        let data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
+        data.atendimentos++;
+        localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify(data));
+        localStorage.removeItem(`save_${usuarioLogado}_${checklistAtual}`);
+        irParaDashboard();
     }
 
-    function logout() {
-        location.reload();
+    function toggleCompacto() { document.body.classList.toggle("compact-mode"); }
+    function atualizarFoto(e) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            let data = JSON.parse(localStorage.getItem("user_data_" + usuarioLogado));
+            data.foto = reader.result;
+            localStorage.setItem("user_data_" + usuarioLogado, JSON.stringify(data));
+            irParaDashboard();
+        };
+        reader.readAsDataURL(e.target.files[0]);
     }
+    function logout() { location.reload(); }
 </script>
 </body>
 </html>
