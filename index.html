@@ -1,325 +1,461 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Checklists de Protocolos</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Checklists de Protocolos Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-<style>
-:root{
---red:#d72626;
---bg:#0b0b0b;
---card:#161616;
-}
+    <style>
+        :root {
+            --primary: #e11d2e;
+            --primary-hover: #ff2e3e;
+            --bg: #f5f5f5;
+            --panel: #ffffff;
+            --text: #111111;
+            --muted: #666;
+            --border: #ddd;
+        }
 
-*{box-sizing:border-box}
+        .dark {
+            --bg: #0b0b0b;
+            --panel: #151515;
+            --text: #f2f2f2;
+            --muted: #9ca3af;
+            --border: #333;
+        }
 
-body{
-margin:0;
-font-family:Segoe UI,Arial;
-background:var(--bg);
-color:white;
-}
+        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
 
-.hidden{display:none}
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
 
-header{
-background:#111;
-padding:15px 25px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
+        /* HEADER */
+        header {
+            height: 70px;
+            background: #0b0b0b;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-button{
-background:var(--red);
-border:none;
-color:white;
-padding:10px 18px;
-border-radius:6px;
-cursor:pointer;
-}
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.1rem; }
+        .logo img { height: 35px; background: white; border-radius: 8px; padding: 5px; }
 
-.container{
-max-width:1000px;
-margin:40px auto;
-padding:20px;
-}
+        .top { display: flex; align-items: center; gap: 15px; }
 
-.card{
-background:var(--card);
-border-radius:14px;
-padding:25px;
-box-shadow:0 15px 40px rgba(0,0,0,.6);
-}
+        .badge {
+            background: var(--primary);
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-input{
-width:100%;
-padding:10px;
-border-radius:6px;
-border:none;
-margin-top:10px;
-background:#222;
-color:white;
-}
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #333;
+            border: 2px solid var(--primary);
+        }
 
-.dashboard{
-display:grid;
-grid-template-columns:1fr 2fr;
-gap:30px;
-}
+        /* LAYOUT */
+        .layout { display: flex; min-height: calc(100vh - 70px); }
 
-.avatar{
-width:60px;
-height:60px;
-border-radius:50%;
-border:2px solid var(--red);
-object-fit:cover;
-cursor:pointer;
-}
+        /* SIDEBAR */
+        aside {
+            width: 240px;
+            background: #0b0b0b;
+            padding: 20px;
+            border-right: 1px solid #222;
+        }
 
-.tiles{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-}
+        aside button {
+            width: 100%;
+            margin-bottom: 12px;
+            background: #151515;
+            border: 1px solid #222;
+            padding: 12px 15px;
+            color: white;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
 
-.tile{
-background:#1c1c1c;
-padding:30px;
-border-radius:12px;
-text-align:center;
-cursor:pointer;
-}
+        aside button:hover { background: var(--primary); border-color: var(--primary); }
 
-.checkline{
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-bottom:1px solid #333;
-padding:15px 0;
-}
+        /* MAIN */
+        main { flex: 1; padding: 32px; max-width: 1000px; margin: 0 auto; }
 
-.progress{
-height:8px;
-background:#333;
-border-radius:6px;
-overflow:hidden;
-margin:15px 0;
-}
+        /* DASHBOARD */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
 
-.bar{
-height:100%;
-background:var(--red);
-width:0%;
-transition:.3s;
-}
+        .dash-card {
+            background: var(--panel);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-.modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.8);
-display:flex;
-align-items:center;
-justify-content:center;
-opacity:0;
-pointer-events:none;
-transition:.3s;
-}
+        .dash-card strong { display: block; color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+        .dash-card p { font-size: 28px; font-weight: 700; margin: 0; }
 
-.modal.active{
-opacity:1;
-pointer-events:auto;
-}
+        /* CHECKLIST CARD */
+        .card {
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            animation: slideUp 0.4s ease;
+        }
 
-.modal img{
-max-width:300px;
-border-radius:12px;
-}
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } }
 
-.topBtns{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-}
+        .card label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+        }
 
-</style>
+        textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            background: var(--bg);
+            color: inherit;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        input[type=checkbox] { 
+            width: 20px; 
+            height: 20px; 
+            margin-top: 2px;
+            accent-color: var(--primary); 
+            cursor: pointer;
+        }
+
+        progress {
+            width: 100%;
+            height: 12px;
+            accent-color: var(--primary);
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        progress::-webkit-progress-bar { background-color: var(--border); border-radius: 10px; }
+        progress::-webkit-progress-value { background-color: var(--primary); border-radius: 10px; }
+
+        /* BUTTONS */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { background: var(--border); }
+
+        /* VIEWS */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .login { max-width: 400px; margin: 100px auto; text-align: center; }
+        .login input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            color: inherit;
+            margin-bottom: 15px;
+        }
+
+        @media(max-width: 800px) {
+            aside { display: none; }
+            header { padding: 0 15px; }
+            main { padding: 20px; }
+        }
+
+        @media print {
+            aside, header, .actions, .btn, .profile-upload { display: none !important; }
+            main { padding: 0; }
+            .card { border: 1px solid #eee; break-inside: avoid; }
+        }
+    </style>
 </head>
 
 <body>
 
 <header>
-<b>Checklists de Protocolos</b>
-<div>
-<span id="hello"></span>
-<button onclick="logout()">Logout</button>
-</div>
+    <div class="logo">
+        <img src="icon.png" alt="Logo">
+        <span>Protocolos XP</span>
+    </div>
+
+    <div class="top">
+        <img id="avatarTop" class="avatar" src="https://ui-avatars.com/api/?name=User&background=333&color=fff">
+        <span id="user"></span>
+        <span class="badge" id="count">0</span>
+        <button class="btn btn-outline" onclick="toggleTema()" style="padding: 8px 12px">🌓</button>
+        <button class="btn" onclick="logout()" style="background: #333">Sair</button>
+    </div>
 </header>
 
-<div id="loginScreen" class="container">
-<div class="card">
-<h2>Login</h2>
-<input id="username" placeholder="Digite seu username">
-<button style="width:100%;margin-top:15px" onclick="doLogin()">Entrar</button>
-</div>
-</div>
+<div class="layout">
+    <aside>
+        <button onclick="mostrarDashboard()">🏠 Dashboard</button>
+        <button onclick="abrir('ME')">📍 Mudança de Endereço</button>
+        <button onclick="abrir('PL')">📊 Atualização de Plano</button>
+    </aside>
 
-<div id="dashboard" class="container hidden">
-<div class="dashboard">
+    <main>
+        <div id="login" class="view active login">
+            <h2>Bem-vindo</h2>
+            <p style="color: var(--muted)">Insira seu nome para começar</p>
+            <input id="username" placeholder="Nome do Usuário" onkeypress="if(event.key==='Enter') entrar()">
+            <button class="btn" style="width: 100%" onclick="entrar()">Acessar Sistema</button>
+        </div>
 
-<div class="card">
-<img id="avatar" class="avatar"><br><br>
-<b id="userName"></b>
-<p>Atendimentos: <span id="count">0</span></p>
-<input type="file" onchange="upload(this)">
-</div>
+        <div id="dashboard" class="view">
+            <h2>Olá, <span id="dashUser"></span> 👋</h2>
+            
+            <div class="dash-card profile-upload" style="display: flex; align-items: center; gap: 20px;">
+                <img id="avatarDash" class="avatar" style="width: 60px; height: 60px;">
+                <div>
+                    <label class="btn btn-outline" style="font-size: 13px;">
+                        Alterar Foto
+                        <input type="file" hidden accept="image/*" onchange="uploadFoto(event)">
+                    </label>
+                </div>
+            </div>
 
-<div class="card">
-<h2>Olá, <span id="hello2"></span></h2>
-<div class="tiles">
-<div class="tile" onclick="openChecklist('me')">Mudança de Endereço</div>
-<div class="tile" onclick="openChecklist('plano')">Atualização de Plano</div>
-</div>
-</div>
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <strong>Total de Atendimentos</strong>
+                    <p id="dashCount">0</p>
+                </div>
+                <div class="dash-card">
+                    <strong>Sessão Atual</strong>
+                    <p id="sessionActive">Ativa</p>
+                </div>
+            </div>
 
-</div>
-</div>
+            <h3>Atalhos Rápidos</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn" onclick="abrir('ME')">+ Mudança Endereço</button>
+                <button class="btn" onclick="abrir('PL')">+ Atualização Plano</button>
+            </div>
+        </div>
 
-<div id="checklist" class="container hidden">
-<div class="topBtns">
-<button onclick="back()">⬅ Voltar</button>
-<button onclick="resetChecklist()">🔄 Resetar</button>
-</div>
+        <div id="app" class="view">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <button class="btn btn-outline" onclick="mostrarDashboard()">← Voltar</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-outline" onclick="resetar()" style="color: var(--primary)">Limpar</button>
+                    <button class="btn" onclick="exportar()">🖨️ Exportar PDF</button>
+                </div>
+            </div>
 
-<div class="card">
-<h2 id="title"></h2>
-<div class="progress"><div id="bar" class="bar"></div></div>
-<div id="steps"></div>
-<button style="width:100%;margin-top:20px" onclick="finish()">Finalizar atendimento</button>
-</div>
-</div>
+            <h2 id="titulo"></h2>
+            
+            <div style="background: var(--panel); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border)">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; font-weight: 600;">
+                    <span>Progresso do Protocolo</span>
+                    <span id="pct">0% concluído</span>
+                </div>
+                <progress id="progress" value="0"></progress>
+            </div>
 
-<div id="photoModal" class="modal" onclick="closePhoto()">
-<img id="bigPhoto">
+            <div id="lista"></div>
+        </div>
+    </main>
 </div>
 
 <script>
-const lists={
-me:[
-"Informar sobre custo/isenção, pedir para levar o equipamento e informar SLA",
-"Filtrar o novo endereço",
-"Verificar documentos",
-"Verificar se já houve ME ou se pode ser isento",
-"Abrir ME no ERP",
-"Verificar se há atualização de plano (abrir atualização e enviar para o FAT, caso haja)",
-"Gerar contrato (verificar informações em sistema)",
-"Abrir a renovação (após o cliente assinar)",
-"Encaminhar para a CS"
-],
-plano:[
-"Informar sobre o processo e benefícios",
-"Verificar documentação e faturas",
-"Abrir a atualização no ERP e preencher",
-"Conferir informações em sistema",
-"Enviar vídeo para o/a cliente",
-"Gerar contrato",
-"Abrir a renovação após a assinatura subir em sistema",
-"Encerrar renovação"
-]
-};
+    let atual = "";
+    const dados = {
+        ME: [
+            "Informar sobre custo/isenção, pedir para levar equipamento e informar SLA",
+            "Filtrar novo endereço",
+            "Verificar documentos",
+            "Verificar se pode ser isento",
+            "Abrir ME no ERP",
+            "Verificar atualização de plano",
+            "Gerar contrato",
+            "Abrir renovação",
+            "Encaminhar CS"
+        ],
+        PL: [
+            "Informar processo e benefícios",
+            "Verificar documentação e faturas",
+            "Abrir atualização no ERP",
+            "Conferir informações em sistema",
+            "Enviar vídeo ao cliente",
+            "Gerar contrato",
+            "Abrir renovação após assinatura",
+            "Encerrar renovação"
+        ]
+    };
 
-let user=null;
+    function entrar() {
+        const input = document.getElementById("username");
+        if (!input.value.trim()) return alert("Por favor, digite seu nome.");
+        localStorage.setItem("user", input.value);
+        mostrarDashboard();
+    }
 
-window.onload=()=>{
- if(localStorage.currentUser){
-   user=localStorage.currentUser;
-   showDashboard();
- }
-};
+    // Auto-login
+    if (localStorage.getItem("user")) {
+        mostrarDashboard();
+    }
 
-function doLogin(){
- user=username.value.trim();
- if(!user)return;
- localStorage.currentUser=user;
- if(!localStorage[user])localStorage[user]=JSON.stringify({count:0,photo:null});
- showDashboard();
-}
+    function mostrarDashboard() {
+        document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+        document.getElementById("dashboard").classList.add("active");
+        document.getElementById("login").classList.remove("active");
 
-function logout(){
- localStorage.removeItem("currentUser");
- location.reload();
-}
+        const userName = localStorage.getItem("user");
+        document.getElementById("user").innerText = userName;
+        document.getElementById("dashUser").innerText = userName;
+        
+        const counts = localStorage.getItem("count") || 0;
+        document.getElementById("dashCount").innerText = counts;
+        document.getElementById("count").innerText = counts;
 
-function showDashboard(){
- loginScreen.classList.add("hidden");
- dashboard.classList.remove("hidden");
- hello.innerText="Olá, "+user;
- hello2.innerText=user;
- userName.innerText=user;
+        const foto = localStorage.getItem("foto");
+        if (foto) {
+            document.getElementById("avatarTop").src = foto;
+            document.getElementById("avatarDash").src = foto;
+        }
+    }
 
- let u=JSON.parse(localStorage[user]);
- count.innerText=u.count;
- avatar.src=u.photo||"https://via.placeholder.com/60";
-}
+    function abrir(tipo) {
+        atual = tipo;
+        document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+        document.getElementById("app").classList.add("active");
 
-function upload(i){
- let r=new FileReader();
- r.onload=e=>{
-   let u=JSON.parse(localStorage[user]);
-   u.photo=e.target.result;
-   localStorage[user]=JSON.stringify(u);
-   avatar.src=e.target.result;
- };
- r.readAsDataURL(i.files[0]);
-}
+        // Incrementa contador apenas ao iniciar novo
+        let c = parseInt(localStorage.getItem("count") || 0) + 1;
+        localStorage.setItem("count", c);
+        document.getElementById("count").innerText = c;
 
-avatar.onclick=()=>{
- bigPhoto.src=avatar.src;
- photoModal.classList.add("active");
-};
+        document.getElementById("titulo").innerText = tipo === "ME" ? "📍 Mudança de Endereço" : "📊 Atualização de Plano";
+        
+        const listaContainer = document.getElementById("lista");
+        const progress = document.getElementById("progress");
 
-function closePhoto(){
- photoModal.classList.remove("active");
-}
+        // Renderização otimizada
+        listaContainer.innerHTML = dados[tipo].map((item, index) => `
+            <div class="card">
+                <label>
+                    <input type="checkbox" onchange="salvar()"> 
+                    <span>${item}</span>
+                </label>
+                <textarea placeholder="Adicionar observação sobre este passo..." oninput="salvar()"></textarea>
+            </div>
+        `).join('');
 
-function openChecklist(type){
- dashboard.classList.add("hidden");
- checklist.classList.remove("hidden");
- title.innerText=type=="me"?"Mudança de Endereço":"Atualização de Plano";
- steps.innerHTML="";
- lists[type].forEach(t=>{
-   steps.innerHTML+=`
-   <div class="checkline">
-     <span>${t}</span>
-     <input type="checkbox" onchange="calc()">
-   </div>`;
- });
- calc();
-}
+        progress.max = dados[tipo].length;
+        carregar();
+    }
 
-function back(){
- checklist.classList.add("hidden");
- dashboard.classList.remove("hidden");
-}
+    function salvar() {
+        const checks = [...document.querySelectorAll("#lista input")].map(x => x.checked);
+        const texts = [...document.querySelectorAll("#lista textarea")].map(x => x.value);
+        localStorage.setItem("check_" + atual, JSON.stringify({ checks, texts }));
+        atualizarProgresso();
+    }
 
-function calc(){
- let c=[...document.querySelectorAll("#steps input")];
- let done=c.filter(x=>x.checked).length;
- bar.style.width=(done/c.length*100)+"%";
-}
+    function carregar() {
+        const dadosSalvos = JSON.parse(localStorage.getItem("check_" + atual));
+        if (!dadosSalvos) {
+            atualizarProgresso();
+            return;
+        }
+        document.querySelectorAll("#lista input").forEach((x, i) => x.checked = dadosSalvos.checks[i] || false);
+        document.querySelectorAll("#lista textarea").forEach((x, i) => x.value = dadosSalvos.texts[i] || "");
+        atualizarProgresso();
+    }
 
-function resetChecklist(){
- document.querySelectorAll("#steps input").forEach(x=>x.checked=false);
- bar.style.width="0%";
-}
+    function atualizarProgresso() {
+        const total = document.querySelectorAll("#lista input").length;
+        const marcados = [...document.querySelectorAll("#lista input")].filter(x => x.checked).length;
+        document.getElementById("progress").value = marcados;
+        document.getElementById("pct").innerText = Math.round((marcados / total) * 100) + "% concluído";
+    }
 
-function finish(){
- let u=JSON.parse(localStorage[user]);
- u.count++;
- localStorage[user]=JSON.stringify(u);
- alert("Atendimento finalizado!");
- location.reload();
-}
+    function resetar() {
+        if (confirm("Deseja realmente limpar este checklist? Todos os dados preenchidos serão perdidos.")) {
+            localStorage.removeItem("check_" + atual);
+            abrir(atual);
+        }
+    }
+
+    function exportar() {
+        window.print();
+    }
+
+    function toggleTema() {
+        document.body.classList.toggle("dark");
+    }
+
+    function logout() {
+        if (confirm("Deseja sair do sistema?")) {
+            localStorage.removeItem("user");
+            location.reload();
+        }
+    }
+
+    function uploadFoto(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            localStorage.setItem("foto", reader.result);
+            document.getElementById("avatarTop").src = reader.result;
+            document.getElementById("avatarDash").src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
 </script>
 
 </body>
